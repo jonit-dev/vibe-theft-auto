@@ -22,7 +22,7 @@
   font-display: swap;
 }
 
-/* Base styles applied directly without @apply */
+/* CSS Variables - these don't conflict with Tailwind */
 :root {
   --color-miami-black: #0A0C14;
   --color-text-white: #EFF6FF;
@@ -35,8 +35,7 @@
   --color-text-subdued: #9D98B3;
 }
 
-
-
+/* Base styles applied directly without @apply to ensure fonts work properly */
 body,
 html {
   height: 100%;
@@ -44,7 +43,6 @@ html {
   font-family: 'Outrun Future', 'Press Start 2P', sans-serif;
   background-color: var(--color-miami-black);
   color: var(--color-text-white);
-
 }
 
 #root {
@@ -52,18 +50,7 @@ html {
   width: 100%;
 }
 
-/* We remove these custom Tailwind classes and use standard typography */
-h1,
-h2,
-h3,
-p,
-code,
-pre,
-button {
-  /* Base styles will be applied through Tailwind classes in components */
-}
-
-/* Screen reader only */
+/* Screen reader only - accessibility utility */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -76,7 +63,7 @@ button {
   border-width: 0;
 }
 
-/* Animation utilities */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -178,7 +165,7 @@ button {
   }
 }
 
-/* Custom classes */
+/* Custom classes within Tailwind layers */
 @layer components {
   .scanlines {
     position: relative;
@@ -230,7 +217,6 @@ button {
     animation: gridScroll 10s linear infinite;
   }
 
-  /* Palm tree silhouette */
   .palm-tree {
     position: absolute;
     width: 60px;
@@ -250,7 +236,6 @@ button {
     opacity: 0.8;
   }
 
-  /* Custom classes for better aesthetics */
   .neon-text {
     text-shadow: 0 0 5px var(--color-neon-pink),
       0 0 10px var(--color-neon-pink),
@@ -292,88 +277,61 @@ button {
   .neon-button:hover::after {
     transform: rotate(30deg) translate(10%, 10%);
   }
+
+  /* Component-specific classes moved into components layer */
+  .auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    padding: 20px;
+  }
+
+  .auth-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  .primary-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+
+  .primary-button:hover {
+    background-color: #2980b9;
+  }
 }
 
-/* Common component styles */
-.auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-  padding: 20px;
-}
-
-.auth-card {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
-  padding: 40px;
-  width: 100%;
-  max-width: 450px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.primary-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background-color 0.3s;
-}
-
-.primary-button:hover {
-  background-color: #2980b9;
-}
-
-/* Utility classes */
-.text-center {
-  text-align: center;
-}
-
-.mb-1 {
-  margin-bottom: 0.5rem;
-}
-
-.mb-2 {
-  margin-bottom: 1rem;
-}
-
-.mb-3 {
-  margin-bottom: 1.5rem;
-}
-
-.mt-1 {
-  margin-top: 0.5rem;
-}
-
-.mt-2 {
-  margin-top: 1rem;
-}
-
-.mt-3 {
-  margin-top: 1.5rem;
-}
+/* Removed utility classes that conflict with Tailwind's utility classes */
