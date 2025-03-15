@@ -1,4 +1,4 @@
-import { GameObject } from './GameObject';
+import { IGameObject } from './interfaces/IGameObject';
 
 /**
  * Base Component class that all components should extend
@@ -6,13 +6,13 @@ import { GameObject } from './GameObject';
  */
 export abstract class Component {
   // Reference to the parent GameObject
-  protected gameObject: GameObject;
+  protected gameObject: IGameObject;
   // Whether the component is enabled
   private enabled: boolean = true;
   // Whether the component has been initialized
   private initialized: boolean = false;
 
-  constructor(gameObject: GameObject) {
+  constructor(gameObject: IGameObject) {
     this.gameObject = gameObject;
   }
 
@@ -79,7 +79,7 @@ export abstract class Component {
   /**
    * Get the parent GameObject
    */
-  getGameObject(): GameObject {
+  getGameObject(): IGameObject {
     return this.gameObject;
   }
 }

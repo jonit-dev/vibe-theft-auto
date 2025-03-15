@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { GameObject } from './GameObject';
+import { IGameObject } from './interfaces/IGameObject';
+import { IScene } from './interfaces/IScene';
 
 /**
  * Scene class that manages GameObjects
  * Replaces the previous BaseScene concept
  */
-export class Scene {
+export class Scene implements IScene {
   // The Three.js scene
   private scene: THREE.Scene;
   // Map of game objects by id
@@ -86,7 +88,7 @@ export class Scene {
    * Remove a game object from this scene
    * @param gameObject The game object to remove
    */
-  public removeGameObject(gameObject: GameObject): void {
+  public removeGameObject(gameObject: IGameObject): void {
     this.gameObjects.delete(gameObject.getId());
   }
 

@@ -1,16 +1,17 @@
 import * as THREE from 'three';
 import { Component } from './Component';
-import { Scene } from './Scene';
+import { IGameObject } from './interfaces/IGameObject';
+import { IScene } from './interfaces/IScene';
 
 /**
  * GameObject class that manages components
  * Similar to Unity's GameObject concept
  */
-export class GameObject {
+export class GameObject implements IGameObject {
   // Unique identifier for this game object
   private id: string;
   // Reference to the scene this game object belongs to
-  private scene: Scene;
+  private scene: IScene;
   // Three.js object for rendering
   private object3D: THREE.Object3D;
   // Components attached to this game object
@@ -18,7 +19,7 @@ export class GameObject {
   // Whether this game object is active
   private active: boolean = true;
 
-  constructor(id: string, scene: Scene) {
+  constructor(id: string, scene: IScene) {
     this.id = id;
     this.scene = scene;
     this.object3D = new THREE.Object3D();
@@ -30,7 +31,7 @@ export class GameObject {
    * @returns The newly created component instance
    */
   public addComponent<T extends Component>(
-    componentType: new (gameObject: GameObject) => T
+    componentType: new (gameObject: IGameObject) => T
   ): T {
     const component = new componentType(this);
     this.components.push(component);
@@ -170,7 +171,7 @@ export class GameObject {
   /**
    * Get the scene this game object belongs to
    */
-  public getScene(): Scene {
+  public getScene(): IScene {
     return this.scene;
   }
 }

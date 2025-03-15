@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Component } from '../Component';
-import { GameObject } from '../GameObject';
+import { IGameObject } from '../interfaces/IGameObject';
 
 /**
  * Transform component to handle position, rotation, and scale
@@ -11,7 +11,7 @@ export class Transform extends Component {
   private rotation: THREE.Euler;
   private scale: THREE.Vector3;
 
-  constructor(gameObject: GameObject) {
+  constructor(gameObject: IGameObject) {
     super(gameObject);
 
     // Get the Object3D from the game object

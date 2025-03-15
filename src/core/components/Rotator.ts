@@ -1,4 +1,5 @@
 import { Component } from '../Component';
+import { IGameObject } from '../interfaces/IGameObject';
 import { Transform } from './Transform';
 
 /**
@@ -12,6 +13,10 @@ export class Rotator extends Component {
     y: 0,
     z: 0,
   };
+
+  constructor(gameObject: IGameObject) {
+    super(gameObject);
+  }
 
   protected start(): void {
     // Get the Transform component

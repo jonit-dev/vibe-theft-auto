@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
-import { Scene } from '../core/Scene';
+import { IScene } from '../core/interfaces/IScene';
 
 @injectable()
 @singleton()
@@ -36,7 +36,7 @@ export class RenderService {
     this.initialized = true;
   }
 
-  public render(scene: Scene | null): void {
+  public render(scene: IScene | null): void {
     if (!scene || !this.initialized) return;
 
     this.renderer.render(scene.getThreeScene(), this.camera);

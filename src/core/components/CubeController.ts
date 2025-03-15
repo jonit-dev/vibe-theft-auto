@@ -1,7 +1,7 @@
 import { container } from 'tsyringe';
 import { InputManager } from '../../utils/InputManager';
 import { Component } from '../Component';
-import { GameObject } from '../GameObject';
+import { IGameObject } from '../interfaces/IGameObject';
 import { Rotator } from './Rotator';
 import { Transform } from './Transform';
 
@@ -15,7 +15,7 @@ export class CubeController extends Component {
   private inputManager: InputManager;
   private moveSpeed: number = 2.0;
 
-  constructor(gameObject: GameObject) {
+  constructor(gameObject: IGameObject) {
     super(gameObject);
     // Get the InputManager instance from the container
     this.inputManager = container.resolve(InputManager);
