@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   module: {
     rules: [
       {
@@ -21,6 +21,7 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
   },
   devServer: {
     static: {
@@ -28,5 +29,7 @@ module.exports = {
     },
     compress: true,
     port: 9000,
+    historyApiFallback: true,
+    hot: true,
   },
 };
