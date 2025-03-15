@@ -1,17 +1,17 @@
 import { injectable, singleton } from 'tsyringe';
-import { BaseScene } from '../scenes/BaseScene';
+import { Scene } from './Scene';
 
 @injectable()
 @singleton()
 export class SceneManager {
-  private scenes: Map<string, BaseScene> = new Map();
-  private currentScene: BaseScene | null = null;
+  private scenes: Map<string, Scene> = new Map();
+  private currentScene: Scene | null = null;
 
   constructor() {
     // Empty constructor
   }
 
-  public registerScene(name: string, scene: BaseScene): void {
+  public registerScene(name: string, scene: Scene): void {
     this.scenes.set(name, scene);
   }
 
@@ -31,7 +31,7 @@ export class SceneManager {
     this.currentScene.onEnter();
   }
 
-  public getCurrentScene(): BaseScene | null {
+  public getCurrentScene(): Scene | null {
     return this.currentScene;
   }
 

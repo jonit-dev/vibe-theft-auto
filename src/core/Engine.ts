@@ -1,5 +1,6 @@
 import { injectable, singleton } from 'tsyringe';
 import { RenderService } from '../services/RenderService';
+import { InputManager } from '../utils/InputManager';
 import { SceneManager } from './SceneManager';
 
 @injectable()
@@ -10,7 +11,8 @@ export class Engine {
 
   constructor(
     private renderService: RenderService,
-    private sceneManager: SceneManager
+    private sceneManager: SceneManager,
+    private inputManager: InputManager
   ) {}
 
   public start(): void {
@@ -41,6 +43,9 @@ export class Engine {
     if (currentScene) {
       this.renderService.render(currentScene);
     }
+
+    // Update input state at the end of the frame
+    this.inputManager.update();
 
     // Request next frame
     requestAnimationFrame(() => this.renderLoop());
