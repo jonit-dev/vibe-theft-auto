@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -11,7 +11,10 @@ const Login: React.FC = () => {
     // In a real app, you would validate credentials here
     console.log('Login attempt with:', username, password);
 
-    // For demo purposes, just navigate to the main menu
+    // For demo purposes, just store a fake token
+    localStorage.setItem('authToken', 'fake-jwt-token');
+
+    // Navigate to the main menu
     navigate('/menu');
   };
 
@@ -76,6 +79,18 @@ const Login: React.FC = () => {
                 color: 'white',
               }}
             />
+            <div style={{ textAlign: 'right', marginTop: '5px' }}>
+              <Link
+                to='/forgot-password'
+                style={{
+                  color: '#3498db',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                }}
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </div>
 
           <button
@@ -99,9 +114,24 @@ const Login: React.FC = () => {
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px' }}>
-          Demo account: guest / password
-        </p>
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <p style={{ fontSize: '14px', marginBottom: '15px' }}>
+            Demo account: guest / password
+          </p>
+          <p style={{ fontSize: '14px' }}>
+            Don't have an account?{' '}
+            <Link
+              to='/register'
+              style={{
+                color: '#3498db',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+              }}
+            >
+              Register
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -29,6 +29,13 @@ const MainMenu: React.FC = () => {
     e.currentTarget.style.transform = 'scale(1)';
   };
 
+  const handleLogout = () => {
+    // Clear authentication token
+    localStorage.removeItem('authToken');
+    // Navigate to login page
+    navigate('/');
+  };
+
   return (
     <div
       style={{
@@ -69,7 +76,7 @@ const MainMenu: React.FC = () => {
 
         <div
           style={menuItemStyle}
-          onClick={() => console.log('Settings clicked')}
+          onClick={() => navigate('/settings')}
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
         >
@@ -78,16 +85,16 @@ const MainMenu: React.FC = () => {
 
         <div
           style={menuItemStyle}
-          onClick={() => console.log('Credits clicked')}
+          onClick={() => navigate('/profile')}
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
         >
-          Credits
+          User Profile
         </div>
 
         <div
           style={menuItemStyle}
-          onClick={() => navigate('/')}
+          onClick={() => handleLogout()}
           onMouseOver={handleMouseOver}
           onMouseOut={handleMouseOut}
         >
