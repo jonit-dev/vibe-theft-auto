@@ -621,3 +621,88 @@ gantt
 The current architecture provides a solid foundation with clear separation of concerns and a familiar component pattern. By implementing the proposed enhancements incrementally, the engine can evolve into a more capable platform while maintaining its clean design.
 
 The priority should be on building features that directly enable game development workflows rather than attempting to compete with fully-featured commercial engines. Focus on creating a lightweight, performant engine that excels at specific use cases rather than trying to be all things to all developers.
+
+## Modular Architecture Update (2023)
+
+To improve maintainability and organization, the engine has been restructured into a modular architecture:
+
+```mermaid
+graph TD
+    subgraph Core
+        Engine
+        SceneManager
+        GameObject
+        Component
+    end
+
+    subgraph Modules
+        Resources[Resources Module]
+        Rendering[Rendering Module]
+        Events[Events Module]
+        Physics[Physics Module]
+        UI[UI Module]
+        Input[Input Module]
+        Audio[Audio Module]
+    end
+
+    Engine --> Resources
+    Engine --> Rendering
+    Engine --> Events
+    Engine --> Physics
+    Engine --> UI
+    Engine --> Input
+    Engine --> Audio
+
+    subgraph Scenes
+        GameScenes
+    end
+
+    SceneManager --> GameScenes
+    GameScenes --> GameObject
+    GameObject --> Component
+```
+
+### Implemented Modules
+
+The following modules have been implemented:
+
+1. **Resources Module**: Asset loading and management
+
+   - ResourceManager - Central service for loading and managing game assets
+   - ResourceCache - System for caching loaded assets
+   - Loaders - Specialized loaders for different asset types (TextureLoader, ModelLoader, etc.)
+
+2. **Rendering Module**: Graphics rendering
+
+   - RenderService - Handles Three.js rendering and camera management
+
+3. **Events Module**: Event communication
+
+   - EventBus - Pub/sub system for decoupled communication
+
+4. **Physics Module**: Physics simulation
+
+   - CollisionComponent - Detects collisions between game objects
+   - CollisionHandlerComponent - Handles collision responses
+
+5. **UI Module**: User interface management
+   - UIService - Manages UI components and rendering
+
+### Remaining Work
+
+1. **Input Module**: Currently exists as InputManager in utils but should be migrated
+2. **Audio Module**: To be implemented for sound and music playback
+
+### Path Alias System
+
+The engine now uses a path alias system for cleaner imports:
+
+```typescript
+// Before
+import { ResourceManager } from '../../services/ResourceManager';
+
+// After
+import { ResourceManager } from '@modules/resources/ResourceManager';
+```
+
+See the [Folder Restructuring](folder-restructuring.md) document for more details about the new architecture.
