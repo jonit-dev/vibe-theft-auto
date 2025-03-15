@@ -21,7 +21,8 @@
       "@core/*": ["src/core/*"],
       "@utils/*": ["src/utils/*"],
       "@scenes/*": ["src/scenes/*"],
-      "@ui/*": ["src/ui/*"]
+      "@ui/*": ["src/ui/*"],
+      "@modules/*": ["src/modules/*"]
     },
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",

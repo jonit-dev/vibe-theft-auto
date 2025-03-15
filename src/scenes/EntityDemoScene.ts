@@ -1,9 +1,9 @@
 import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
-import { EventBus } from '@/services/EventBus';
-import { RenderService } from '@/services/RenderService';
-import { ResourceManager } from '@/services/ResourceManager';
 import { EntityBuilder } from '@/utils/EntityBuilder';
+import { EventBus } from '@modules/events/EventBus';
+import { RenderService } from '@modules/rendering/RenderService';
+import { ResourceManager } from '@modules/resources/ResourceManager';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
 

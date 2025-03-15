@@ -1,6 +1,6 @@
+import { IResourceLoader } from '@core/interfaces/IResourceLoader';
 import * as THREE from 'three';
 import { injectable } from 'tsyringe';
-import { IResourceLoader } from '../../core/interfaces/IResourceLoader';
 
 /**
  * Loader for audio resources

@@ -1,11 +1,11 @@
-import { inject, injectable, singleton } from 'tsyringe';
-import type { IResourceLoader } from '../core/interfaces/IResourceLoader';
+import type { IResourceLoader } from '@core/interfaces/IResourceLoader';
 import {
   LoadingProgress,
   ResourceMetadata,
   ResourceRequest,
-} from '../core/interfaces/ResourceInterfaces';
-import { EventBus } from './EventBus';
+} from '@core/interfaces/ResourceInterfaces';
+import { EventBus } from '@modules/events/EventBus';
+import { inject, injectable, singleton } from 'tsyringe';
 import { ResourceCache } from './ResourceCache';
 
 /**

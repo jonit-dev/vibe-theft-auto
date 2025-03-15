@@ -1,9 +1,9 @@
-import { CollisionComponent } from '@/core/components/CollisionComponent';
-import { CollisionHandlerComponent } from '@/core/components/CollisionHandlerComponent';
 import { IGameObject } from '@/core/interfaces/IGameObject';
 import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
-import { EventBus } from '@/services/EventBus';
+import { EventBus } from '@modules/events/EventBus';
+import { CollisionComponent } from '@modules/physics/components/CollisionComponent';
+import { CollisionHandlerComponent } from '@modules/physics/components/CollisionHandlerComponent';
 import * as THREE from 'three';
 import { injectable } from 'tsyringe';
 

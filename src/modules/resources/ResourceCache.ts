@@ -1,9 +1,9 @@
-import { injectable, singleton } from 'tsyringe';
 import {
   CachedResource,
   ResourceMetadata,
-} from '../core/interfaces/ResourceInterfaces';
-import { EventBus } from './EventBus';
+} from '@core/interfaces/ResourceInterfaces';
+import { EventBus } from '@modules/events/EventBus';
+import { injectable, singleton } from 'tsyringe';
 
 /**
  * Cache for storing loaded resources with reference counting and metadata

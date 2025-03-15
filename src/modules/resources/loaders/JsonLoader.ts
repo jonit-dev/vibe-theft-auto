@@ -1,5 +1,5 @@
+import { IResourceLoader } from '@core/interfaces/IResourceLoader';
 import { injectable } from 'tsyringe';
-import { IResourceLoader } from '../../core/interfaces/IResourceLoader';
 
 /**
  * Loader for JSON resources

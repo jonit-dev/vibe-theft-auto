@@ -1,3 +1,6 @@
+import { EventBus } from '@modules/events/EventBus';
+import { RenderService } from '@modules/rendering/RenderService';
+import { UIService } from '@modules/ui/UIService';
 import { container } from 'tsyringe';
 import { Application } from './Application';
 import { ReactContainer } from './components/ReactContainer';
@@ -8,21 +11,18 @@ import { EventDemoScene } from './scenes/EventDemoScene';
 import { IntroScene } from './scenes/IntroScene';
 import { MainScene } from './scenes/MainScene';
 import { ResourceDemoScene } from './scenes/ResourceDemoScene';
-import { EventBus } from './services/EventBus';
-import { RenderService } from './services/RenderService';
-import { UIService } from './services/UIService';
 import { EntityBuilder } from './utils/EntityBuilder';
 import { InputManager } from './utils/InputManager';
 // Import resource management components
-import { IResourceLoader } from './core/interfaces/IResourceLoader';
-import { ResourceCache } from './services/ResourceCache';
-import { ResourceManager } from './services/ResourceManager';
+import { ResourceCache } from '@modules/resources/ResourceCache';
+import { ResourceManager } from '@modules/resources/ResourceManager';
 import {
   AudioLoader,
   JsonLoader,
   ModelLoader,
   TextureLoader,
-} from './services/loaders';
+} from '@modules/resources/loaders';
+import { IResourceLoader } from './core/interfaces/IResourceLoader';
 
 // Configure the dependency injection container
 export function setupContainer() {

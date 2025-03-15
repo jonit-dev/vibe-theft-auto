@@ -1,6 +1,6 @@
+import { SceneManager } from '@core/SceneManager';
+import { ReactContainer } from '@game-components/ReactContainer';
 import { injectable, singleton } from 'tsyringe';
-import { ReactContainer } from '../components/ReactContainer';
-import { SceneManager } from '../core/SceneManager';
 
 @injectable()
 @singleton()

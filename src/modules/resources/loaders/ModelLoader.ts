@@ -1,7 +1,7 @@
+import { IResourceLoader } from '@core/interfaces/IResourceLoader';
 import * as THREE from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { injectable } from 'tsyringe';
-import { IResourceLoader } from '../../core/interfaces/IResourceLoader';
 
 /**
  * Loader for 3D model resources

@@ -1,4 +1,4 @@
-import { IScene } from '@/core/interfaces/IScene';
+import { IScene } from '@core/interfaces/IScene';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
 

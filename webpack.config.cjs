@@ -55,6 +55,7 @@ module.exports = {
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@scenes': path.resolve(__dirname, 'src/scenes'),
       '@ui': path.resolve(__dirname, 'src/ui'),
+      '@modules': path.resolve(__dirname, 'src/modules'),
     },
   },
   plugins: [

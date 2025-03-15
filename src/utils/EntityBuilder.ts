@@ -1,7 +1,7 @@
 import { GameObject } from '@/core/GameObject';
 import { IScene } from '@/core/interfaces/IScene';
 import { SceneManager } from '@/core/SceneManager';
-import { ResourceManager } from '@/services/ResourceManager';
+import { ResourceManager } from '@modules/resources/ResourceManager';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
 

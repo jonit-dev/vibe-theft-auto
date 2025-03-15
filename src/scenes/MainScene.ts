@@ -2,7 +2,7 @@ import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
 import { CubeController } from '@/core/components/CubeController';
 import { Rotator } from '@/core/components/Rotator';
-import { RenderService } from '@/services/RenderService';
+import { RenderService } from '@modules/rendering/RenderService';
 import * as THREE from 'three';
 import { container, injectable, singleton } from 'tsyringe';
 
