@@ -2,6 +2,7 @@ import { Scene } from '@/core/Scene';
 import { CameraService, FirstPersonCamera, OrbitCamera } from '@modules/camera';
 import { EventBus } from '@modules/events/EventBus';
 import { InputManager } from '@modules/input/InputManager';
+import { PlayerMovementComponent } from '@modules/physics/components/PlayerMovementComponent';
 import { RenderService } from '@modules/rendering/RenderService';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
@@ -14,7 +15,7 @@ export class CameraDemoScene extends Scene {
   private eventBus: EventBus;
   private inputManager: InputManager;
 
-  private player: THREE.Mesh;
+  private playerObject: THREE.Mesh;
   private cubes: THREE.Mesh[] = [];
   private controls: THREE.Group;
   private canvas: HTMLCanvasElement;
@@ -37,12 +38,12 @@ export class CameraDemoScene extends Scene {
     // Get the canvas from the render service
     this.canvas = this.renderService.getRenderer().domElement;
 
-    // Create a player object
+    // Create a player mesh
     const playerGeometry = new THREE.BoxGeometry(1, 2, 1);
     const playerMaterial = new THREE.MeshStandardMaterial({ color: 0x3399ff });
-    this.player = new THREE.Mesh(playerGeometry, playerMaterial);
-    this.player.position.set(0, 1, 0);
-    this.player.castShadow = true;
+    this.playerObject = new THREE.Mesh(playerGeometry, playerMaterial);
+    this.playerObject.position.set(0, 1, 0);
+    this.playerObject.castShadow = true;
 
     // Create UI controls
     this.controls = new THREE.Group();
@@ -51,6 +52,23 @@ export class CameraDemoScene extends Scene {
   public onEnter(): void {
     // Set up scene
     this.setupScene();
+
+    // Create a game object for the player
+    const playerGameObject = this.createGameObject('player');
+
+    // Add the playerObject to the game object's Object3D
+    playerGameObject.getObject3D().position.copy(this.playerObject.position);
+
+    // Add the player mesh as a child of the game object's Object3D
+    playerGameObject.getObject3D().add(this.playerObject);
+
+    // Add movement component to the player
+    const playerMovement = playerGameObject.addComponent(
+      PlayerMovementComponent
+    );
+    playerMovement.setMoveSpeed(8);
+    playerMovement.setJumpForce(10);
+    playerMovement.setGravity(25);
 
     // Set up cameras
     this.setupCameras();
@@ -85,14 +103,13 @@ export class CameraDemoScene extends Scene {
   }
 
   public update(deltaTime: number): void {
-    // Handle player movement
-    this.updatePlayer(deltaTime);
+    super.update(deltaTime);
 
     // Update camera target if needed
     const activeCamera = this.cameraService.getActiveCamera();
     if (activeCamera) {
-      if (activeCamera.getTarget() !== this.player) {
-        activeCamera.setTarget(this.player);
+      if (activeCamera.getTarget() !== this.playerObject) {
+        activeCamera.setTarget(this.playerObject);
       }
 
       // Update active camera indicator
@@ -101,9 +118,6 @@ export class CameraDemoScene extends Scene {
   }
 
   private setupScene(): void {
-    // Add player to scene
-    this.getThreeScene().add(this.player);
-
     // Create ground
     const groundGeometry = new THREE.PlaneGeometry(50, 50);
     const groundMaterial = new THREE.MeshStandardMaterial({
@@ -173,14 +187,14 @@ export class CameraDemoScene extends Scene {
       offset: new THREE.Vector3(0, 3, 5),
       damping: 5,
     });
-    followCamera.setTarget(this.player);
+    followCamera.setTarget(this.playerObject);
 
     // Create an orbit camera
     const orbitCamera = this.cameraService.createCamera('orbit', 'orbit', {
       radius: 10,
       initialPhi: Math.PI / 4,
     });
-    orbitCamera.setTarget(this.player);
+    orbitCamera.setTarget(this.playerObject);
 
     // Create a first-person camera
     const firstPersonCamera = this.cameraService.createCamera(
@@ -191,7 +205,7 @@ export class CameraDemoScene extends Scene {
         sensitivity: 0.2,
       }
     );
-    firstPersonCamera.setTarget(this.player);
+    firstPersonCamera.setTarget(this.playerObject);
 
     // Set the follow camera as active by default
     this.cameraService.setActiveCamera('follow');
@@ -213,10 +227,12 @@ export class CameraDemoScene extends Scene {
     this.instructionsDiv.innerHTML = `
       <h3 style="margin: 0 0 10px 0;">Camera Demo Controls</h3>
       <p style="margin: 5px 0;"><b>WASD</b>: Move player</p>
+      <p style="margin: 5px 0;"><b>SPACE</b>: Jump</p>
       <p style="margin: 5px 0;"><b>1</b>: Switch to Follow Camera</p>
       <p style="margin: 5px 0;"><b>2</b>: Switch to Orbit Camera (drag mouse to rotate)</p>
       <p style="margin: 5px 0;"><b>3</b>: Switch to First-Person Camera (drag mouse to look around)</p>
       <p style="margin: 5px 0;"><b>Mouse Wheel</b>: Zoom in/out (Orbit Camera only)</p>
+      <p style="margin: 5px 0;"><b>ESC</b>: Return to main scene</p>
     `;
     document.body.appendChild(this.instructionsDiv);
 
@@ -356,67 +372,6 @@ export class CameraDemoScene extends Scene {
     }
   }
 
-  private updatePlayer(deltaTime: number): void {
-    const moveSpeed = 5 * deltaTime;
-
-    // Get camera direction for movement relative to camera
-    const cameraThree = this.cameraService.getThreeCamera();
-    if (!cameraThree) return;
-
-    const cameraDirection = new THREE.Vector3();
-    cameraThree.getWorldDirection(cameraDirection);
-    cameraDirection.y = 0; // Keep movement on the horizontal plane
-    cameraDirection.normalize();
-
-    // Calculate right vector
-    const right = new THREE.Vector3();
-    right.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
-
-    // Movement based on WASD keys
-    if (this.inputManager.isKeyPressed('KeyW')) {
-      this.player.position.add(
-        cameraDirection.clone().multiplyScalar(moveSpeed)
-      );
-    }
-    if (this.inputManager.isKeyPressed('KeyS')) {
-      this.player.position.add(
-        cameraDirection.clone().multiplyScalar(-moveSpeed)
-      );
-    }
-    if (this.inputManager.isKeyPressed('KeyA')) {
-      this.player.position.add(right.clone().multiplyScalar(-moveSpeed));
-    }
-    if (this.inputManager.isKeyPressed('KeyD')) {
-      this.player.position.add(right.clone().multiplyScalar(moveSpeed));
-    }
-
-    // Rotate player to face movement direction
-    if (
-      this.inputManager.isKeyPressed('KeyW') ||
-      this.inputManager.isKeyPressed('KeyS') ||
-      this.inputManager.isKeyPressed('KeyA') ||
-      this.inputManager.isKeyPressed('KeyD')
-    ) {
-      const movementDirection = new THREE.Vector3();
-
-      if (this.inputManager.isKeyPressed('KeyW'))
-        movementDirection.add(cameraDirection);
-      if (this.inputManager.isKeyPressed('KeyS'))
-        movementDirection.sub(cameraDirection);
-      if (this.inputManager.isKeyPressed('KeyA')) movementDirection.sub(right);
-      if (this.inputManager.isKeyPressed('KeyD')) movementDirection.add(right);
-
-      if (movementDirection.length() > 0) {
-        movementDirection.normalize();
-        const targetRotation = Math.atan2(
-          movementDirection.x,
-          movementDirection.z
-        );
-        this.player.rotation.y = targetRotation;
-      }
-    }
-  }
-
   private disposeScene(): void {
     // Remove all event listeners
     this.canvas.removeEventListener(
@@ -434,8 +389,8 @@ export class CameraDemoScene extends Scene {
     this.canvas.removeEventListener('wheel', this.handleMouseEvent.bind(this));
 
     // Dispose geometries and materials
-    this.player.geometry.dispose();
-    (this.player.material as THREE.Material).dispose();
+    this.playerObject.geometry.dispose();
+    (this.playerObject.material as THREE.Material).dispose();
 
     for (const cube of this.cubes) {
       cube.geometry.dispose();
