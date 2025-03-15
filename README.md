@@ -5,7 +5,8 @@ A scalable Three.js scaffold with TSyringe for dependency injection.
 ## Features
 
 - 3D rendering with Three.js
-- Dependency injection with TSyringe's @autoInjectable
+- Dependency injection with TSyringe's @injectable decorator
+- Clean Application class architecture
 - TypeScript for type safety
 - Scene management system
 - Input handling
@@ -17,9 +18,9 @@ A scalable Three.js scaffold with TSyringe for dependency injection.
 ├── public/             # Static files
 │   └── index.html      # Main HTML entry point
 ├── src/                # Source code
+│   ├── Application.ts  # Main application class that wires everything together
 │   ├── core/           # Core engine components
 │   │   ├── Engine.ts   # Main game loop
-│   │   ├── Container.ts # DI setup
 │   │   └── SceneManager.ts # Scene management
 │   ├── scenes/         # Game scenes
 │   │   ├── BaseScene.ts # Abstract scene class
@@ -89,17 +90,27 @@ The optimized output will be in the `dist` directory. You can serve these files 
 
 ## Dependency Injection
 
-This project uses TSyringe with `@autoInjectable()` for simple dependency injection.
-Services are automatically resolved when injected into constructors.
+This project uses TSyringe with `@injectable()` for dependency injection.
+All services are registered in the container as singletons.
 
 Example:
 
 ```typescript
-@autoInjectable()
+// Service definition
+@injectable()
+@singleton() // Optional, if you want only one instance
+export class MyService {
+  // Implementation
+}
+
+// Usage in another class
+@injectable()
 export class MyClass {
-  constructor(private someService?: SomeService) {}
+  constructor(private myService: MyService) {}
 }
 ```
+
+> **Note:** Originally we tried using `@autoInjectable()` but encountered constructor invocation issues. Using `@injectable()` and explicitly registering dependencies in the container proved more reliable.
 
 ## Troubleshooting
 

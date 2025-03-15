@@ -1,11 +1,15 @@
-import { autoInjectable, singleton } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 import { BaseScene } from '../scenes/BaseScene';
 
-@autoInjectable()
+@injectable()
 @singleton()
 export class SceneManager {
   private scenes: Map<string, BaseScene> = new Map();
   private currentScene: BaseScene | null = null;
+
+  constructor() {
+    // Empty constructor
+  }
 
   public registerScene(name: string, scene: BaseScene): void {
     this.scenes.set(name, scene);

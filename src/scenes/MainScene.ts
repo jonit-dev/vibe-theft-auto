@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { autoInjectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { BaseScene } from './BaseScene';
 
-@autoInjectable()
+@injectable()
 export class MainScene extends BaseScene {
   private cube: THREE.Mesh;
 

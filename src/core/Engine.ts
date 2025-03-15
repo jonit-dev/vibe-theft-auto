@@ -1,16 +1,16 @@
-import { autoInjectable, singleton } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 import { RenderService } from '../services/RenderService';
 import { SceneManager } from './SceneManager';
 
-@autoInjectable()
+@injectable()
 @singleton()
 export class Engine {
   private running: boolean = false;
   private lastTime: number = 0;
 
   constructor(
-    private renderService?: RenderService,
-    private sceneManager?: SceneManager
+    private renderService: RenderService,
+    private sceneManager: SceneManager
   ) {}
 
   public start(): void {
@@ -18,7 +18,7 @@ export class Engine {
 
     this.running = true;
     this.lastTime = performance.now();
-    this.renderService?.initialize();
+    this.renderService.initialize();
     this.renderLoop();
   }
 
@@ -34,11 +34,11 @@ export class Engine {
     this.lastTime = currentTime;
 
     // Update current scene
-    this.sceneManager?.update(deltaTime);
+    this.sceneManager.update(deltaTime);
 
     // Render the scene
-    const currentScene = this.sceneManager?.getCurrentScene();
-    if (currentScene && this.renderService) {
+    const currentScene = this.sceneManager.getCurrentScene();
+    if (currentScene) {
       this.renderService.render(currentScene);
     }
 

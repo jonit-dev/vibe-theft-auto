@@ -1,6 +1,6 @@
-import { autoInjectable, singleton } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 
-@autoInjectable()
+@injectable()
 @singleton()
 export class InputManager {
   private keys: Map<string, boolean> = new Map();

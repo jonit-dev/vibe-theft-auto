@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { autoInjectable, singleton } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 import { BaseScene } from '../scenes/BaseScene';
 
-@autoInjectable()
+@injectable()
 @singleton()
 export class RenderService {
   private renderer: THREE.WebGLRenderer;
