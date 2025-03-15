@@ -2,13 +2,15 @@ import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
 import { CubeController } from '@/core/components/CubeController';
 import { Rotator } from '@/core/components/Rotator';
+import { RenderService } from '@/services/RenderService';
 import * as THREE from 'three';
-import { injectable, singleton } from 'tsyringe';
+import { container, injectable, singleton } from 'tsyringe';
 
 @injectable()
 @singleton()
 export class MainScene extends Scene {
   private sceneManager: SceneManager;
+  private renderService: RenderService;
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
   private backButton: THREE.Mesh | null = null;
@@ -16,6 +18,7 @@ export class MainScene extends Scene {
   constructor(sceneManager: SceneManager) {
     super();
     this.sceneManager = sceneManager;
+    this.renderService = container.resolve(RenderService);
   }
 
   public onEnter(): void {
@@ -177,11 +180,8 @@ export class MainScene extends Scene {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    // Update the raycaster with the camera and mouse position
-    const camera = this.getThreeScene().getObjectByName(
-      'camera'
-    ) as THREE.Camera;
-    if (!camera) return;
+    // Use the camera from RenderService directly
+    const camera = this.renderService.getCamera();
 
     this.raycaster.setFromCamera(this.mouse, camera);
 
