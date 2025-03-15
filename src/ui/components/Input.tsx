@@ -8,7 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   fullWidth?: boolean;
 }
 
-const Input: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = ({
   label,
   error,
   id,
@@ -39,5 +39,3 @@ const Input: React.FC<InputProps> = ({
     </div>
   );
 };
-
-export default Input;

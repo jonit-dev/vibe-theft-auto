@@ -28,7 +28,7 @@ interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {
   pulse?: boolean;
 }
 
-const Icon: React.FC<IconProps> = ({
+export const Icon: React.FC<IconProps> = ({
   name,
   size = 'md',
   color = 'default',
@@ -271,5 +271,3 @@ const Icon: React.FC<IconProps> = ({
 
   return renderIcon();
 };
-
-export default Icon;

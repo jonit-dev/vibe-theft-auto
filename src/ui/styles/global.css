@@ -1,9 +1,9 @@
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 /* Note: For "Outrun Future" and "VCR OSD Mono", these would need to be hosted separately or loaded via @font-face */
 @font-face {
@@ -26,14 +26,16 @@
 :root {
   --color-miami-black: #0A0C14;
   --color-text-white: #EFF6FF;
+  --color-neon-pink: #FF41A6;
+  --color-vice-blue: #00A5E5;
+  --color-palm-green: #00E574;
+  --color-sunset-orange: #FF8E42;
+  --color-interface-dark: #1A1133;
+  --color-interface-light: #2A2044;
+  --color-text-subdued: #9D98B3;
 }
 
-/* Base Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 body,
 html {
@@ -42,7 +44,7 @@ html {
   font-family: 'Outrun Future', 'Press Start 2P', sans-serif;
   background-color: var(--color-miami-black);
   color: var(--color-text-white);
-  overflow-x: hidden;
+
 }
 
 #root {
@@ -164,6 +166,18 @@ button {
   }
 }
 
+@keyframes palmSway {
+
+  0%,
+  100% {
+    transform: rotate(-1deg);
+  }
+
+  50% {
+    transform: rotate(1deg);
+  }
+}
+
 /* Custom classes */
 @layer components {
   .scanlines {
@@ -214,6 +228,69 @@ button {
     background-size: 20px 20px;
     background-position: center center;
     animation: gridScroll 10s linear infinite;
+  }
+
+  /* Palm tree silhouette */
+  .palm-tree {
+    position: absolute;
+    width: 60px;
+    height: 150px;
+    background-color: rgba(0, 0, 0, 0.6);
+    clip-path: polygon(
+        /* Trunk */
+        45% 100%, 55% 100%, 55% 40%, 45% 40%,
+        /* Fronds */
+        45% 40%, 30% 35%, 15% 25%, 5% 15%, 10% 10%, 20% 20%, 30% 30%, 45% 35%,
+        /* Top middle frond */
+        45% 35%, 50% 20%, 55% 35%,
+        /* Right fronds */
+        55% 35%, 70% 30%, 80% 25%, 92% 12%, 88% 8%, 75% 20%, 65% 30%, 55% 40%);
+    transform-origin: bottom center;
+    animation: palmSway 10s ease-in-out infinite;
+    opacity: 0.8;
+  }
+
+  /* Custom classes for better aesthetics */
+  .neon-text {
+    text-shadow: 0 0 5px var(--color-neon-pink),
+      0 0 10px var(--color-neon-pink),
+      0 0 20px var(--color-neon-pink);
+  }
+
+  .neon-text-blue {
+    text-shadow: 0 0 5px var(--color-vice-blue),
+      0 0 10px var(--color-vice-blue),
+      0 0 20px var(--color-vice-blue);
+  }
+
+  .neon-border {
+    box-shadow: 0 0 5px var(--color-neon-pink),
+      0 0 10px var(--color-neon-pink);
+  }
+
+  .neon-button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .neon-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to bottom right,
+        rgba(255, 65, 166, 0) 0%,
+        rgba(255, 65, 166, 0.1) 50%,
+        rgba(255, 65, 166, 0) 100%);
+    transform: rotate(30deg);
+    transition: all 0.5s ease;
+  }
+
+  .neon-button:hover::after {
+    transform: rotate(30deg) translate(10%, 10%);
   }
 }
 

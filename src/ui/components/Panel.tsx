@@ -10,7 +10,7 @@ interface PanelProps {
   withGrid?: boolean;
 }
 
-const Panel: React.FC<PanelProps> = ({
+export const Panel: React.FC<PanelProps> = ({
   children,
   className = '',
   variant = 'solid',
@@ -58,5 +58,3 @@ const Panel: React.FC<PanelProps> = ({
 
   return <div className={classes}>{children}</div>;
 };
-
-export default Panel;
