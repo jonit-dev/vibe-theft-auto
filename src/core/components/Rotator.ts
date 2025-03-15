@@ -1,5 +1,5 @@
-import { Component } from '../Component';
-import { IGameObject } from '../interfaces/IGameObject';
+import { Component } from '@/core/Component';
+import { IGameObject } from '@/core/interfaces/IGameObject';
 import { Transform } from './Transform';
 
 /**

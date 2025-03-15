@@ -1,9 +1,9 @@
+import { Scene } from '@/core/Scene';
+import { CubeController } from '@/core/components/CubeController';
+import { Rotator } from '@/core/components/Rotator';
+import { Transform } from '@/core/components/Transform';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
-import { Scene } from '../core/Scene';
-import { CubeController } from '../core/components/CubeController';
-import { Rotator } from '../core/components/Rotator';
-import { Transform } from '../core/components/Transform';
 
 @injectable()
 @singleton()

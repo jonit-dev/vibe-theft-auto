@@ -1,6 +1,6 @@
+import { Component } from '@/core/Component';
+import { IGameObject } from '@/core/interfaces/IGameObject';
 import * as THREE from 'three';
-import { Component } from '../Component';
-import { IGameObject } from '../interfaces/IGameObject';
 
 /**
  * Transform component to handle position, rotation, and scale

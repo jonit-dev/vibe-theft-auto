@@ -1,7 +1,7 @@
+import { GameObject } from '@/core/GameObject';
+import { IGameObject } from '@/core/interfaces/IGameObject';
+import { IScene } from '@/core/interfaces/IScene';
 import * as THREE from 'three';
-import { GameObject } from './GameObject';
-import { IGameObject } from './interfaces/IGameObject';
-import { IScene } from './interfaces/IScene';
 
 /**
  * Scene class that manages GameObjects

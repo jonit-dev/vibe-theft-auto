@@ -1,5 +1,5 @@
+import { Component } from '@/core/Component';
 import * as THREE from 'three';
-import { Component } from '../Component';
 import { IScene } from './IScene';
 
 /**

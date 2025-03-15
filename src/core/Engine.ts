@@ -1,7 +1,7 @@
+import { SceneManager } from '@/core/SceneManager';
+import { RenderService } from '@/services/RenderService';
+import { InputManager } from '@/utils/InputManager';
 import { injectable, singleton } from 'tsyringe';
-import { RenderService } from '../services/RenderService';
-import { InputManager } from '../utils/InputManager';
-import { SceneManager } from './SceneManager';
 
 @injectable()
 @singleton()

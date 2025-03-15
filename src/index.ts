@@ -1,11 +1,13 @@
-import 'reflect-metadata'; // Required for TSyringe
+import 'reflect-metadata'; // Required for TSyringe - MUST BE THE FIRST ONE
+
+import { Application } from '@/Application';
+import { Engine } from '@/core/Engine';
+import { SceneManager } from '@/core/SceneManager';
+import { MainScene } from '@/scenes/MainScene';
+import { RenderService } from '@/services/RenderService';
+import { InputManager } from '@/utils/InputManager';
+
 import { container } from 'tsyringe';
-import { Application } from './Application';
-import { Engine } from './core/Engine';
-import { SceneManager } from './core/SceneManager';
-import { MainScene } from './scenes/MainScene';
-import { RenderService } from './services/RenderService';
-import { InputManager } from './utils/InputManager';
 
 // Register all services with the container
 container.registerSingleton(Engine);

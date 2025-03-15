@@ -1,5 +1,5 @@
+import { IScene } from '@/core/interfaces/IScene';
 import { injectable, singleton } from 'tsyringe';
-import { IScene } from './interfaces/IScene';
 
 @injectable()
 @singleton()

@@ -1,4 +1,4 @@
-import { IGameObject } from './interfaces/IGameObject';
+import { IGameObject } from '@/core/interfaces/IGameObject';
 
 /**
  * Base Component class that all components should extend

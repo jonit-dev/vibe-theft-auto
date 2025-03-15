@@ -1,7 +1,7 @@
+import { Engine } from '@/core/Engine';
+import { SceneManager } from '@/core/SceneManager';
+import { MainScene } from '@/scenes/MainScene';
 import { injectable, singleton } from 'tsyringe';
-import { Engine } from './core/Engine';
-import { SceneManager } from './core/SceneManager';
-import { MainScene } from './scenes/MainScene';
 
 /**
  * Main application class that wires everything together.
