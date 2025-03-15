@@ -113,16 +113,16 @@ export class ResourceDemoScene extends Scene {
    * Create dynamic resources instead of loading from disk
    */
   private createDynamicResources(): void {
-    // Create texture from canvas
-    const crateCanvas = AssetCreator.createCrateTexture();
-    const crateTexture = new THREE.CanvasTexture(crateCanvas);
+    // Load the physical crate texture from the assets folder
+    const textureLoader = new THREE.TextureLoader();
+    const crateTexture = textureLoader.load('assets/textures/crate.webp');
     crateTexture.wrapS = THREE.RepeatWrapping;
     crateTexture.wrapT = THREE.RepeatWrapping;
     crateTexture.repeat.set(2, 2);
 
     // Register the texture with ResourceManager directly
     this.resourceManager.cache.set(
-      'texture://dynamic/crate.jpg',
+      'texture://dynamic/crate.jpg', // Keep the same ID for compatibility
       crateTexture,
       {
         type: 'texture',

@@ -158,13 +158,13 @@ export class EntityDemoScene extends Scene {
   private async createTexturedCube(): Promise<void> {
     try {
       await this.entityBuilder.createTexturedCube({
-        textureUrl: 'dynamic/crate.jpg',
+        textureUrl: 'assets/textures/crate.webp',
         position: new THREE.Vector3(-5, 0, 0),
         size: 2,
         tags: ['entity-demo'],
       });
 
-      this.updateStatus('Created textured cube');
+      this.updateStatus('Created textured cube with new crate texture');
     } catch (error) {
       console.error('Error creating textured cube:', error);
       this.updateStatus(`Error creating textured cube: ${error}`);
@@ -196,20 +196,20 @@ export class EntityDemoScene extends Scene {
    */
   private async createTerrain(): Promise<void> {
     try {
-      // In a real scenario, you'd have actual heightmap and texture files
-      // For this demo, we'll assume they exist
+      // Use the dry riverbed rock texture as both the diffuse texture and heightmap
+      const texturePath = 'assets/textures/terrain/dry_riverbed_rock.webp';
+
       this.terrain = await this.entityBuilder.createTerrain({
-        heightmapUrl: 'assets/textures/heightmap.jpg',
-        diffuseTextureUrl: 'assets/textures/grass.jpg',
-        normalMapUrl: 'assets/textures/grass_normal.jpg',
+        heightmapUrl: texturePath, // Use the same texture as a heightmap
+        diffuseTextureUrl: texturePath,
         width: 50,
-        height: 5,
+        height: 3, // Reduce the height to make terrain displacement less extreme
         depth: 50,
         position: new THREE.Vector3(0, -2, 0),
         tags: ['entity-demo'],
       });
 
-      this.updateStatus('Created terrain using EntityBuilder');
+      this.updateStatus('Created terrain with dry riverbed rock texture');
     } catch (error) {
       console.error('Error creating terrain:', error);
       this.updateStatus(`Error creating terrain: ${error}`);
