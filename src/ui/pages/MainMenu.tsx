@@ -4,31 +4,6 @@ import { useNavigate } from 'react-router-dom';
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
 
-  const menuItemStyle = {
-    padding: '15px 30px',
-    margin: '10px 0',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    color: 'white',
-    border: '2px solid #3498db',
-    borderRadius: '5px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    width: '300px',
-    textAlign: 'center' as const,
-  };
-
-  const handleMouseOver = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.backgroundColor = 'rgba(52, 152, 219, 0.3)';
-    e.currentTarget.style.transform = 'scale(1.05)';
-  };
-
-  const handleMouseOut = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
-    e.currentTarget.style.transform = 'scale(1)';
-  };
-
   const handleLogout = () => {
     // Clear authentication token
     localStorage.removeItem('authToken');
@@ -36,70 +11,45 @@ const MainMenu: React.FC = () => {
     navigate('/');
   };
 
+  const menuItems = [
+    { title: 'START GAME', action: () => navigate('/game'), primary: true },
+    { title: 'SETTINGS', action: () => navigate('/settings') },
+    { title: 'PROFILE', action: () => navigate('/profile') },
+    { title: 'LOGOUT', action: handleLogout, danger: true },
+  ];
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        background: 'linear-gradient(135deg, #16222A, #3A6073)',
-        color: 'white',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <h1
-          style={{
-            fontSize: '48px',
-            marginBottom: '50px',
-            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-          }}
-        >
+    <div className='min-h-screen w-full flex flex-col items-center justify-center bg-neon'>
+      <div className='text-center mb-12'>
+        <h1 className='text-6xl font-bold text-white text-glow animate-pulse-slow mb-4'>
           Vibe Theft Auto
         </h1>
+        <p className='text-gray-400 text-xl'>
+          The ultimate virtual heist experience
+        </p>
+      </div>
 
-        <div
-          style={menuItemStyle}
-          onClick={() => navigate('/game')}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-        >
-          Start Game
-        </div>
+      <div className='w-full max-w-md space-y-4'>
+        {menuItems.map((item, index) => (
+          <button
+            key={index}
+            onClick={item.action}
+            className={`w-full py-4 px-6 rounded-md text-xl font-semibold border-2 transition-all duration-300 transform hover:scale-105 
+              ${
+                item.primary
+                  ? 'border-game-accent bg-game-accent/20 text-game-accent shadow-[0_0_15px_rgba(245,158,11,0.5)] hover:shadow-[0_0_25px_rgba(245,158,11,0.8)]'
+                  : item.danger
+                  ? 'border-game-danger bg-game-danger/20 text-game-danger shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_25px_rgba(239,68,68,0.8)]'
+                  : 'border-game-primary bg-game-primary/20 text-game-primary shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:shadow-[0_0_25px_rgba(59,130,246,0.8)]'
+              }`}
+          >
+            {item.title}
+          </button>
+        ))}
+      </div>
 
-        <div
-          style={menuItemStyle}
-          onClick={() => navigate('/settings')}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-        >
-          Settings
-        </div>
-
-        <div
-          style={menuItemStyle}
-          onClick={() => navigate('/profile')}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-        >
-          User Profile
-        </div>
-
-        <div
-          style={menuItemStyle}
-          onClick={() => handleLogout()}
-          onMouseOver={handleMouseOver}
-          onMouseOut={handleMouseOut}
-        >
-          Logout
-        </div>
+      <div className='absolute bottom-4 text-gray-500 text-sm'>
+        © 2025 Vibe Theft Auto. All rights reserved.
       </div>
     </div>
   );

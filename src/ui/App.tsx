@@ -1,13 +1,13 @@
+import ProtectedRoute from '@components/ProtectedRoute';
+import ForgotPassword from '@pages/ForgotPassword';
+import GameContainer from '@pages/GameContainer';
+import Login from '@pages/Login';
+import MainMenu from '@pages/MainMenu';
+import Register from '@pages/Register';
+import Settings from '@pages/Settings';
+import UserProfile from '@pages/UserProfile';
 import React from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import ProtectedRoute from './components/ProtectedRoute';
-import ForgotPassword from './pages/ForgotPassword';
-import GameContainer from './pages/GameContainer';
-import Login from './pages/Login';
-import MainMenu from './pages/MainMenu';
-import Register from './pages/Register';
-import Settings from './pages/Settings';
-import UserProfile from './pages/UserProfile';
 
 const App: React.FC = () => {
   return (

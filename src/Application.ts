@@ -43,4 +43,15 @@ export class Application {
     this.engine.start();
     console.log('Application started!');
   }
+
+  /**
+   * Stop the application and clean up resources
+   */
+  public stop(): void {
+    // Stop the engine
+    if (this.engine && typeof this.engine.stop === 'function') {
+      this.engine.stop();
+    }
+    console.log('Application stopped!');
+  }
 }

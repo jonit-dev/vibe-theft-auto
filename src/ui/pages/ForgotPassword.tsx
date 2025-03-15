@@ -25,173 +25,95 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className='auth-container'>
-      <div className='auth-card'>
-        {!submitted ? (
-          <>
-            <h2>Reset Your Password</h2>
+    <div className='min-h-screen w-full flex items-center justify-center bg-cyberpunk'>
+      <div className='cyber-border p-1 w-full max-w-md'>
+        <div className='bg-game-dark p-8 rounded-md'>
+          {!submitted ? (
+            <>
+              <h2 className='text-3xl font-bold text-center mb-6 text-white text-glow'>
+                Reset Your Password
+              </h2>
 
-            {error && <div className='error-message'>{error}</div>}
+              {error && (
+                <div className='bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6'>
+                  {error}
+                </div>
+              )}
 
-            <p className='instructions'>
-              Enter your email address below and we'll send you instructions to
-              reset your password.
-            </p>
+              <p className='text-gray-400 text-center mb-8'>
+                Enter your email address below and we'll send you instructions
+                to reset your password.
+              </p>
 
-            <form onSubmit={handleSubmit}>
-              <div className='form-group'>
-                <label htmlFor='email'>Email</label>
-                <input
-                  type='email'
-                  id='email'
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder='Enter your email'
-                />
+              <form onSubmit={handleSubmit} className='space-y-6'>
+                <div>
+                  <label htmlFor='email' className='label-dark'>
+                    Email
+                  </label>
+                  <input
+                    type='email'
+                    id='email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder='Enter your email'
+                    className='form-control-dark'
+                  />
+                </div>
+
+                <button type='submit' className='btn-neon w-full py-3'>
+                  SEND RESET INSTRUCTIONS
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className='text-center py-4'>
+              <div className='w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-8 w-8 text-game-secondary'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M5 13l4 4L19 7'
+                  />
+                </svg>
               </div>
+              <h2 className='text-2xl font-bold text-white mb-4 text-glow'>
+                Check Your Email
+              </h2>
+              <p className='text-gray-300 mb-6'>
+                We've sent password reset instructions to{' '}
+                <strong className='text-game-primary'>{email}</strong>. Please
+                check your email and follow the instructions.
+              </p>
+              <p className='text-gray-400'>
+                Didn't receive an email? Check your spam folder or{' '}
+                <button
+                  onClick={() => setSubmitted(false)}
+                  className='text-game-primary hover:underline focus:outline-none'
+                >
+                  try again
+                </button>
+                .
+              </p>
+            </div>
+          )}
 
-              <button type='submit' className='primary-button'>
-                Send Reset Instructions
-              </button>
-            </form>
-          </>
-        ) : (
-          <div className='success-message'>
-            <h2>Check Your Email</h2>
-            <p>
-              We've sent password reset instructions to <strong>{email}</strong>
-              . Please check your email and follow the instructions.
-            </p>
-            <p>
-              Didn't receive an email? Check your spam folder or{' '}
-              <button
-                onClick={() => setSubmitted(false)}
-                className='text-button'
-              >
-                try again
-              </button>
-              .
-            </p>
+          <div className='mt-8 text-center'>
+            <Link
+              to='/'
+              className='text-game-primary hover:text-game-primary hover:underline transition-colors'
+            >
+              Back to Login
+            </Link>
           </div>
-        )}
-
-        <div className='auth-footer'>
-          <Link to='/'>Back to Login</Link>
         </div>
       </div>
-
-      <style>
-        {`
-        .auth-container {
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           min-height: 100vh;
-           background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-           padding: 20px;
-         }
-         
-         .auth-card {
-           background: rgba(255, 255, 255, 0.9);
-           border-radius: 10px;
-           padding: 40px;
-           width: 100%;
-           max-width: 450px;
-           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-         }
-         
-         h2 {
-           text-align: center;
-           margin-bottom: 20px;
-           color: #333;
-         }
-         
-         .instructions {
-           text-align: center;
-           margin-bottom: 25px;
-           color: #666;
-         }
-         
-         .form-group {
-           margin-bottom: 20px;
-         }
-         
-         label {
-           display: block;
-           margin-bottom: 8px;
-           font-weight: bold;
-           color: #555;
-         }
-         
-         input {
-           width: 100%;
-           padding: 12px;
-           border: 1px solid #ddd;
-           border-radius: 4px;
-           font-size: 16px;
-         }
-         
-         .primary-button {
-           width: 100%;
-           padding: 12px;
-           background-color: #3498db;
-           color: white;
-           border: none;
-           border-radius: 4px;
-           font-size: 16px;
-           cursor: pointer;
-           margin-top: 10px;
-           transition: background-color 0.3s;
-         }
-         
-         .primary-button:hover {
-           background-color: #2980b9;
-         }
-         
-         .error-message {
-           background-color: #f8d7da;
-           color: #721c24;
-           padding: 10px;
-           border-radius: 4px;
-           margin-bottom: 20px;
-           text-align: center;
-         }
-         
-         .success-message {
-           text-align: center;
-           color: #2c3e50;
-         }
-         
-         .success-message p {
-           margin-bottom: 15px;
-         }
-         
-         .text-button {
-           background: none;
-           border: none;
-           color: #3498db;
-           cursor: pointer;
-           font-size: inherit;
-           padding: 0;
-           text-decoration: underline;
-         }
-         
-         .auth-footer {
-           text-align: center;
-           margin-top: 20px;
-           color: #666;
-         }
-         
-         .auth-footer a {
-           color: #3498db;
-           text-decoration: none;
-         }
-         
-         .auth-footer a:hover {
-           text-decoration: underline;
-         }
-        `}
-      </style>
     </div>
   );
 };

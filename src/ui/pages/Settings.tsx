@@ -45,35 +45,56 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <div className='settings-container'>
-      <div className='settings-header'>
-        <h1>Settings</h1>
-        <button className='back-button' onClick={() => navigate('/menu')}>
-          Back to Menu
-        </button>
-      </div>
+    <div className='min-h-screen bg-gradient-to-b from-gray-900 to-game-dark'>
+      <div className='container mx-auto max-w-4xl px-4 py-10'>
+        <div className='flex justify-between items-center mb-8'>
+          <h1 className='text-4xl font-bold text-white text-glow'>Settings</h1>
+          <button
+            onClick={() => navigate('/menu')}
+            className='px-4 py-2 bg-gray-800 text-gray-200 rounded-md hover:bg-gray-700 transition-colors'
+          >
+            Back to Menu
+          </button>
+        </div>
 
-      <div className='settings-tabs'>
-        <button
-          className={`tab-button ${activeTab === 'game' ? 'active' : ''}`}
-          onClick={() => setActiveTab('game')}
-        >
-          Game Settings
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'account' ? 'active' : ''}`}
-          onClick={() => setActiveTab('account')}
-        >
-          Account Settings
-        </button>
-      </div>
+        <div className='cyber-border p-1 w-full mb-8'>
+          <div className='bg-game-dark rounded flex'>
+            <button
+              className={`px-6 py-4 text-lg font-medium transition-colors ${
+                activeTab === 'game'
+                  ? 'text-game-primary border-b-2 border-game-primary'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+              onClick={() => setActiveTab('game')}
+            >
+              Game Settings
+            </button>
+            <button
+              className={`px-6 py-4 text-lg font-medium transition-colors ${
+                activeTab === 'account'
+                  ? 'text-game-primary border-b-2 border-game-primary'
+                  : 'text-gray-400 hover:text-gray-200'
+              }`}
+              onClick={() => setActiveTab('account')}
+            >
+              Account Settings
+            </button>
+          </div>
+        </div>
 
-      <div className='settings-content'>
-        {activeTab === 'game' ? (
-          <div className='game-settings'>
-            <div className='setting-group'>
-              <label>
-                SFX Volume: {settings.sfxVolume}%
+        <div className='card-dark p-8 mb-8'>
+          {activeTab === 'game' ? (
+            <div className='space-y-8'>
+              <div>
+                <label className='block mb-2 text-gray-300'>
+                  SFX Volume: {settings.sfxVolume}%
+                </label>
+                <div className='h-2 bg-gray-700 rounded-full overflow-hidden'>
+                  <div
+                    className='h-full bg-game-primary rounded-full'
+                    style={{ width: `${settings.sfxVolume}%` }}
+                  ></div>
+                </div>
                 <input
                   type='range'
                   min='0'
@@ -82,13 +103,20 @@ const Settings: React.FC = () => {
                   onChange={(e) =>
                     handleChange('sfxVolume', parseInt(e.target.value))
                   }
+                  className='w-full mt-2'
                 />
-              </label>
-            </div>
+              </div>
 
-            <div className='setting-group'>
-              <label>
-                Music Volume: {settings.musicVolume}%
+              <div>
+                <label className='block mb-2 text-gray-300'>
+                  Music Volume: {settings.musicVolume}%
+                </label>
+                <div className='h-2 bg-gray-700 rounded-full overflow-hidden'>
+                  <div
+                    className='h-full bg-game-accent rounded-full'
+                    style={{ width: `${settings.musicVolume}%` }}
+                  ></div>
+                </div>
                 <input
                   type='range'
                   min='0'
@@ -97,237 +125,178 @@ const Settings: React.FC = () => {
                   onChange={(e) =>
                     handleChange('musicVolume', parseInt(e.target.value))
                   }
+                  className='w-full mt-2'
                 />
-              </label>
-            </div>
+              </div>
 
-            <div className='setting-group'>
-              <label>Graphics Quality:</label>
-              <select
-                value={settings.graphicsQuality}
-                onChange={(e) =>
-                  handleChange('graphicsQuality', e.target.value)
-                }
-              >
-                <option value='low'>Low</option>
-                <option value='medium'>Medium</option>
-                <option value='high'>High</option>
-                <option value='ultra'>Ultra</option>
-              </select>
-            </div>
-
-            <div className='setting-group checkbox'>
-              <label>
-                <input
-                  type='checkbox'
-                  checked={settings.shadows}
-                  onChange={(e) => handleChange('shadows', e.target.checked)}
-                />
-                Enable Shadows
-              </label>
-            </div>
-
-            <div className='setting-group checkbox'>
-              <label>
-                <input
-                  type='checkbox'
-                  checked={settings.antialiasing}
+              <div>
+                <label className='block mb-2 text-gray-300'>
+                  Graphics Quality:
+                </label>
+                <select
+                  value={settings.graphicsQuality}
                   onChange={(e) =>
-                    handleChange('antialiasing', e.target.checked)
+                    handleChange('graphicsQuality', e.target.value)
                   }
-                />
-                Enable Anti-aliasing
-              </label>
-            </div>
-          </div>
-        ) : (
-          <div className='account-settings'>
-            <div className='setting-group checkbox'>
-              <label>
-                <input
-                  type='checkbox'
-                  checked={settings.emailNotifications}
-                  onChange={(e) =>
-                    handleChange('emailNotifications', e.target.checked)
-                  }
-                />
-                Email Notifications
-              </label>
-            </div>
+                  className='form-control-dark w-full'
+                >
+                  <option value='low'>Low</option>
+                  <option value='medium'>Medium</option>
+                  <option value='high'>High</option>
+                  <option value='ultra'>Ultra</option>
+                </select>
+              </div>
 
-            <div className='setting-group checkbox'>
-              <label>
-                <input
-                  type='checkbox'
-                  checked={settings.twoFactorAuth}
-                  onChange={(e) =>
-                    handleChange('twoFactorAuth', e.target.checked)
-                  }
-                />
-                Two-Factor Authentication
-              </label>
-            </div>
+              <div className='flex items-center space-x-3'>
+                <div className='relative inline-block w-10 mr-2 align-middle select-none'>
+                  <input
+                    type='checkbox'
+                    id='shadows'
+                    checked={settings.shadows}
+                    onChange={(e) => handleChange('shadows', e.target.checked)}
+                    className='peer absolute block w-6 h-6 rounded-full bg-gray-600 appearance-none cursor-pointer border-4 border-game-dark checked:border-4 checked:border-game-dark checked:bg-game-secondary transition-all duration-200 checked:right-0'
+                  />
+                  <label
+                    htmlFor='shadows'
+                    className='block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer transition-all duration-200 peer-checked:bg-game-secondary/30'
+                  ></label>
+                </div>
+                <label
+                  htmlFor='shadows'
+                  className='text-gray-300 cursor-pointer'
+                >
+                  Enable Shadows
+                </label>
+              </div>
 
-            <div className='setting-group'>
-              <button className='change-button'>Change Password</button>
+              <div className='flex items-center space-x-3'>
+                <div className='relative inline-block w-10 mr-2 align-middle select-none'>
+                  <input
+                    type='checkbox'
+                    id='antialiasing'
+                    checked={settings.antialiasing}
+                    onChange={(e) =>
+                      handleChange('antialiasing', e.target.checked)
+                    }
+                    className='peer absolute block w-6 h-6 rounded-full bg-gray-600 appearance-none cursor-pointer border-4 border-game-dark checked:border-4 checked:border-game-dark checked:bg-game-secondary transition-all duration-200 checked:right-0'
+                  />
+                  <label
+                    htmlFor='antialiasing'
+                    className='block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer transition-all duration-200 peer-checked:bg-game-secondary/30'
+                  ></label>
+                </div>
+                <label
+                  htmlFor='antialiasing'
+                  className='text-gray-300 cursor-pointer'
+                >
+                  Enable Anti-aliasing
+                </label>
+              </div>
             </div>
+          ) : (
+            <div className='space-y-6'>
+              <div className='flex items-center space-x-3'>
+                <div className='relative inline-block w-10 mr-2 align-middle select-none'>
+                  <input
+                    type='checkbox'
+                    id='emailNotifications'
+                    checked={settings.emailNotifications}
+                    onChange={(e) =>
+                      handleChange('emailNotifications', e.target.checked)
+                    }
+                    className='peer absolute block w-6 h-6 rounded-full bg-gray-600 appearance-none cursor-pointer border-4 border-game-dark checked:border-4 checked:border-game-dark checked:bg-game-secondary transition-all duration-200 checked:right-0'
+                  />
+                  <label
+                    htmlFor='emailNotifications'
+                    className='block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer transition-all duration-200 peer-checked:bg-game-secondary/30'
+                  ></label>
+                </div>
+                <label
+                  htmlFor='emailNotifications'
+                  className='text-gray-300 cursor-pointer'
+                >
+                  Email Notifications
+                </label>
+              </div>
 
-            <div className='setting-group'>
-              <button className='danger-button'>Delete Account</button>
+              <div className='flex items-center space-x-3'>
+                <div className='relative inline-block w-10 mr-2 align-middle select-none'>
+                  <input
+                    type='checkbox'
+                    id='twoFactorAuth'
+                    checked={settings.twoFactorAuth}
+                    onChange={(e) =>
+                      handleChange('twoFactorAuth', e.target.checked)
+                    }
+                    className='peer absolute block w-6 h-6 rounded-full bg-gray-600 appearance-none cursor-pointer border-4 border-game-dark checked:border-4 checked:border-game-dark checked:bg-game-secondary transition-all duration-200 checked:right-0'
+                  />
+                  <label
+                    htmlFor='twoFactorAuth'
+                    className='block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer transition-all duration-200 peer-checked:bg-game-secondary/30'
+                  ></label>
+                </div>
+                <label
+                  htmlFor='twoFactorAuth'
+                  className='text-gray-300 cursor-pointer'
+                >
+                  Two-Factor Authentication
+                </label>
+              </div>
+
+              <div className='pt-4'>
+                <button className='w-full p-3 bg-game-primary bg-opacity-20 border border-game-primary text-game-primary hover:bg-opacity-30 transition-colors rounded-md mb-4'>
+                  Change Password
+                </button>
+              </div>
+
+              <div>
+                <button className='w-full p-3 bg-game-danger bg-opacity-20 border border-game-danger text-game-danger hover:bg-opacity-30 transition-colors rounded-md'>
+                  Delete Account
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        <div className='flex justify-end'>
+          <button
+            onClick={handleSave}
+            disabled={saveStatus === 'saving'}
+            className={`btn-primary px-6 py-3 ${
+              saveStatus === 'saving' ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            {saveStatus === 'idle' && 'Save Settings'}
+            {saveStatus === 'saving' && (
+              <span className='flex items-center'>
+                <svg
+                  className='animate-spin -ml-1 mr-2 h-4 w-4 text-white'
+                  xmlns='http://www.w3.org/2000/svg'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                >
+                  <circle
+                    className='opacity-25'
+                    cx='12'
+                    cy='12'
+                    r='10'
+                    stroke='currentColor'
+                    strokeWidth='4'
+                  ></circle>
+                  <path
+                    className='opacity-75'
+                    fill='currentColor'
+                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                  ></path>
+                </svg>
+                Saving...
+              </span>
+            )}
+            {saveStatus === 'saved' && 'Saved!'}
+            {saveStatus === 'error' && 'Error Saving'}
+          </button>
+        </div>
       </div>
-
-      <div className='settings-footer'>
-        <button
-          className='save-button'
-          onClick={handleSave}
-          disabled={saveStatus === 'saving'}
-        >
-          {saveStatus === 'idle' && 'Save Settings'}
-          {saveStatus === 'saving' && 'Saving...'}
-          {saveStatus === 'saved' && 'Saved!'}
-          {saveStatus === 'error' && 'Error Saving'}
-        </button>
-      </div>
-
-      <style>
-        {`
-          .settings-container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            background-color: #f5f8fa;
-            min-height: 100vh;
-            color: #2c3e50;
-          }
-          
-          .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-          }
-          
-          .settings-header h1 {
-            margin: 0;
-            color: #2c3e50;
-          }
-          
-          .back-button {
-            padding: 8px 16px;
-            background-color: #7f8c8d;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-          
-          .settings-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ddd;
-          }
-          
-          .tab-button {
-            padding: 10px 20px;
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-weight: 500;
-            color: #7f8c8d;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            margin-right: 20px;
-          }
-          
-          .tab-button.active {
-            color: #3498db;
-            border-bottom: 3px solid #3498db;
-          }
-          
-          .settings-content {
-            background-color: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            margin-bottom: 30px;
-          }
-          
-          .setting-group {
-            margin-bottom: 20px;
-          }
-          
-          .setting-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-          }
-          
-          .setting-group input[type="range"] {
-            width: 100%;
-            margin-top: 10px;
-          }
-          
-          .setting-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-          }
-          
-          .setting-group.checkbox label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-          }
-          
-          .setting-group.checkbox input {
-            margin-right: 10px;
-          }
-          
-          .change-button {
-            width: 100%;
-            padding: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-          
-          .danger-button {
-            width: 100%;
-            padding: 10px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-          
-          .settings-footer {
-            display: flex;
-            justify-content: flex-end;
-          }
-          
-          .save-button {
-            padding: 10px 30px;
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-          }
-          
-          .save-button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-          }
-        `}
-      </style>
     </div>
   );
 };

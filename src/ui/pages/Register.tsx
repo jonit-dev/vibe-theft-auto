@@ -55,158 +55,98 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className='auth-container'>
-      <div className='auth-card'>
-        <h2>Create an Account</h2>
+    <div className='min-h-screen w-full flex items-center justify-center bg-cyberpunk'>
+      <div className='cyber-border p-1 w-full max-w-lg'>
+        <div className='bg-game-dark p-8 rounded-md'>
+          <h2 className='text-3xl font-bold text-center mb-8 text-white text-glow'>
+            Create Your Account
+          </h2>
 
-        {error && <div className='error-message'>{error}</div>}
+          {error && (
+            <div className='bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6'>
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit}>
-          <div className='form-group'>
-            <label htmlFor='username'>Username</label>
-            <input
-              type='text'
-              id='username'
-              name='username'
-              value={formData.username}
-              onChange={handleChange}
-              placeholder='Enter username'
-            />
+          <form onSubmit={handleSubmit} className='space-y-5'>
+            <div>
+              <label htmlFor='username' className='label-dark'>
+                Username
+              </label>
+              <input
+                type='text'
+                id='username'
+                name='username'
+                value={formData.username}
+                onChange={handleChange}
+                placeholder='Enter username'
+                className='form-control-dark'
+              />
+            </div>
+
+            <div>
+              <label htmlFor='email' className='label-dark'>
+                Email
+              </label>
+              <input
+                type='email'
+                id='email'
+                name='email'
+                value={formData.email}
+                onChange={handleChange}
+                placeholder='Enter email'
+                className='form-control-dark'
+              />
+            </div>
+
+            <div>
+              <label htmlFor='password' className='label-dark'>
+                Password
+              </label>
+              <input
+                type='password'
+                id='password'
+                name='password'
+                value={formData.password}
+                onChange={handleChange}
+                placeholder='Enter password'
+                className='form-control-dark'
+              />
+            </div>
+
+            <div>
+              <label htmlFor='confirmPassword' className='label-dark'>
+                Confirm Password
+              </label>
+              <input
+                type='password'
+                id='confirmPassword'
+                name='confirmPassword'
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder='Confirm password'
+                className='form-control-dark'
+              />
+            </div>
+
+            <button type='submit' className='btn-neon w-full py-3 text-lg mt-4'>
+              REGISTER
+            </button>
+          </form>
+
+          <div className='mt-6 text-center'>
+            <p className='text-gray-400'>
+              Already have an account?{' '}
+              <Link
+                to='/'
+                className='text-game-primary hover:text-game-primary hover:underline transition-colors'
+              >
+                Log In
+              </Link>
+            </p>
           </div>
-
-          <div className='form-group'>
-            <label htmlFor='email'>Email</label>
-            <input
-              type='email'
-              id='email'
-              name='email'
-              value={formData.email}
-              onChange={handleChange}
-              placeholder='Enter email'
-            />
-          </div>
-
-          <div className='form-group'>
-            <label htmlFor='password'>Password</label>
-            <input
-              type='password'
-              id='password'
-              name='password'
-              value={formData.password}
-              onChange={handleChange}
-              placeholder='Enter password'
-            />
-          </div>
-
-          <div className='form-group'>
-            <label htmlFor='confirmPassword'>Confirm Password</label>
-            <input
-              type='password'
-              id='confirmPassword'
-              name='confirmPassword'
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder='Confirm password'
-            />
-          </div>
-
-          <button type='submit' className='primary-button'>
-            Register
-          </button>
-        </form>
-
-        <div className='auth-footer'>
-          Already have an account? <Link to='/'>Log In</Link>
         </div>
       </div>
-
-      <style>
-        {`
-        .auth-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          min-height: 100vh;
-          background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-          padding: 20px;
-        }
-
-        .auth-card {
-          background: rgba(255, 255, 255, 0.9);
-          border-radius: 10px;
-          padding: 40px;
-          width: 100%;
-          max-width: 450px;
-          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-          text-align: center;
-          margin-bottom: 30px;
-          color: #333;
-        }
-
-        .form-group {
-          margin-bottom: 20px;
-        }
-
-        label {
-          display: block;
-          margin-bottom: 8px;
-          font-weight: bold;
-          color: #555;
-        }
-
-        input {
-          width: 100%;
-          padding: 12px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          font-size: 16px;
-        }
-
-        .primary-button {
-          width: 100%;
-          padding: 12px;
-          background-color: #3498db;
-          color: white;
-          border: none;
-          border-radius: 4px;
-          font-size: 16px;
-          cursor: pointer;
-          margin-top: 10px;
-          transition: background-color 0.3s;
-        }
-
-        .primary-button:hover {
-          background-color: #2980b9;
-        }
-
-        .error-message {
-          background-color: #f8d7da;
-          color: #721c24;
-          padding: 10px;
-          border-radius: 4px;
-          margin-bottom: 20px;
-          text-align: center;
-        }
-
-        .auth-footer {
-          text-align: center;
-          margin-top: 20px;
-          color: #666;
-        }
-
-        .auth-footer a {
-          color: #3498db;
-          text-decoration: none;
-        }
-
-        .auth-footer a:hover {
-          text-decoration: underline;
-        }
-        `}
-      </style>
     </div>
   );
 };
