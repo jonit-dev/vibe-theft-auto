@@ -1,5 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BasePage } from '../components/BasePage';
+import { Button } from '../components/Button';
+import { Panel } from '../components/Panel';
+import { Text } from '../components/Typography';
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -19,39 +23,70 @@ const MainMenu: React.FC = () => {
   ];
 
   return (
-    <div className='min-h-screen w-full flex flex-col items-center justify-center bg-neon'>
-      <div className='text-center mb-12'>
-        <h1 className='text-6xl font-bold text-white text-glow animate-pulse-slow mb-4'>
-          Vibe Theft Auto
-        </h1>
-        <p className='text-gray-400 text-xl'>
-          The ultimate virtual heist experience
-        </p>
-      </div>
-
-      <div className='w-full max-w-md space-y-4'>
-        {menuItems.map((item, index) => (
-          <button
-            key={index}
-            onClick={item.action}
-            className={`w-full py-4 px-6 rounded-md text-xl font-semibold border-2 transition-all duration-300 transform hover:scale-105 
-              ${
-                item.primary
-                  ? 'border-game-accent bg-game-accent/20 text-game-accent shadow-[0_0_15px_rgba(245,158,11,0.5)] hover:shadow-[0_0_25px_rgba(245,158,11,0.8)]'
-                  : item.danger
-                  ? 'border-game-danger bg-game-danger/20 text-game-danger shadow-[0_0_15px_rgba(239,68,68,0.5)] hover:shadow-[0_0_25px_rgba(239,68,68,0.8)]'
-                  : 'border-game-primary bg-game-primary/20 text-game-primary shadow-[0_0_15px_rgba(59,130,246,0.5)] hover:shadow-[0_0_25px_rgba(59,130,246,0.8)]'
-              }`}
+    <BasePage
+      backgroundImage='/images/palm-tree-bkg.webp'
+      blendMode='soft-light'
+      backgroundOpacity={0.05}
+      withGrid={true}
+      withScanlines={true}
+      className='bg-ocean-drive overflow-hidden p-6'
+      maxWidth='1200px'
+    >
+      {/* Main content container with flex centering */}
+      <div className='flex items-center justify-center min-h-screen w-full'>
+        <div className='w-full max-w-2xl p-4 md:p-8 z-10'>
+          <Panel
+            variant='translucent'
+            glowColor='pink'
+            bordered
+            className='p-8 md:p-12 w-full z-10 rounded-lg mx-auto shadow-neon-pink'
+            withScanlines
           >
-            {item.title}
-          </button>
-        ))}
-      </div>
+            {/* Title with neon effect */}
+            <div className='relative mb-12 md:mb-14'>
+              <h1 className='text-center text-neon-pink text-5xl md:text-6xl font-bold neon-text tracking-wider uppercase px-4'>
+                Vibe Theft Auto
+              </h1>
+              <div className='w-4/5 h-px bg-gradient-to-r from-transparent via-neon-pink to-transparent mx-auto mt-8 opacity-70'></div>
+              <Text className='text-center text-text-subdued mt-4'>
+                The ultimate virtual heist experience
+              </Text>
+            </div>
 
-      <div className='absolute bottom-4 text-gray-500 text-sm'>
-        © 2025 Vibe Theft Auto. All rights reserved.
+            <div className='w-full space-y-6 px-6 md:px-8'>
+              {menuItems.map((item, index) => (
+                <Button
+                  key={index}
+                  onClick={item.action}
+                  fullWidth
+                  size='lg'
+                  variant={
+                    item.primary
+                      ? 'gradient'
+                      : item.danger
+                      ? 'primary'
+                      : 'secondary'
+                  }
+                  className='py-5 text-xl'
+                >
+                  {item.title}
+                </Button>
+              ))}
+            </div>
+
+            <div className='mt-14 text-center'>
+              <Text
+                size='xs'
+                color='text-text-subdued'
+                className='uppercase tracking-wide'
+              >
+                © 2025 Vibe Theft Auto. All rights reserved.
+              </Text>
+            </div>
+          </Panel>
+        </div>
       </div>
-    </div>
+    </BasePage>
   );
 };
 
