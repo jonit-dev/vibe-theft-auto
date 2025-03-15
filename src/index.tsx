@@ -1,6 +1,7 @@
+import 'reflect-metadata';
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import 'reflect-metadata'; // Required for TSyringe
 
 // Import global styles
 import './ui/styles/global.css';

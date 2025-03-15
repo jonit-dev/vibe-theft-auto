@@ -16,7 +16,7 @@
 /* Note: For "Outrun Future" and "VCR OSD Mono", these would need to be hosted separately or loaded via @font-face */
 @font-face {
   font-family: 'Outrun Future';
-  src: url('/fonts/OutrunFuture.woff2') format('woff2');
+  src: url('../../../public/fonts/outrun-future/Outrun future.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -24,7 +24,7 @@
 
 @font-face {
   font-family: 'VCR OSD Mono';
-  src: url('/fonts/VCROSDMono.woff2') format('woff2');
+  src: url('../../../public/fonts/vcr_osd_mono/VCR_OSD_MONO_1.001.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
