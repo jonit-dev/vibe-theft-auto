@@ -134,3 +134,18 @@ If you encounter any issues:
 ## License
 
 MIT
+
+## Architecture
+
+This project uses a clean architecture with dependency injection:
+
+1. All components are registered with the TSyringe container in index.ts
+2. The Application class handles initialization and connecting components
+3. Dependencies are injected via constructor injection
+
+This approach:
+
+- Keeps components loosely coupled
+- Makes testing easier
+- Centralizes the initialization logic
+- Eliminates boilerplate code
