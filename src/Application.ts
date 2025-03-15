@@ -3,6 +3,7 @@ import { SceneManager } from '@/core/SceneManager';
 import { EventDemoScene } from '@/scenes/EventDemoScene';
 import { IntroScene } from '@/scenes/IntroScene';
 import { MainScene } from '@/scenes/MainScene';
+import { ResourceDemoScene } from '@/scenes/ResourceDemoScene';
 import { injectable, singleton } from 'tsyringe';
 
 /**
@@ -17,7 +18,8 @@ export class Application {
     private sceneManager: SceneManager,
     private mainScene: MainScene,
     private introScene: IntroScene,
-    private eventDemoScene: EventDemoScene
+    private eventDemoScene: EventDemoScene,
+    private resourceDemoScene: ResourceDemoScene
   ) {
     this.initialize();
   }
@@ -30,6 +32,7 @@ export class Application {
     this.sceneManager.registerScene('main', this.mainScene);
     this.sceneManager.registerScene('intro', this.introScene);
     this.sceneManager.registerScene('eventDemo', this.eventDemoScene);
+    this.sceneManager.registerScene('resource-demo', this.resourceDemoScene);
 
     // Start with the intro scene
     this.sceneManager.switchScene('intro');

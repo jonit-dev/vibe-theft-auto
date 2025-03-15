@@ -11,6 +11,12 @@ A scalable Three.js scaffold with TSyringe for dependency injection.
 - Scene management system
 - Input handling
 - Webpack for bundling
+- Resource Management System with:
+  - Asset loading and caching
+  - Reference counting for memory optimization
+  - Support for textures, models, audio, and JSON
+  - Progress tracking for preloading assets
+  - Resource tagging for batch operations
 
 ## Project Structure
 
@@ -21,16 +27,33 @@ A scalable Three.js scaffold with TSyringe for dependency injection.
 │   ├── Application.ts  # Main application class that wires everything together
 │   ├── core/           # Core engine components
 │   │   ├── Engine.ts   # Main game loop
-│   │   └── SceneManager.ts # Scene management
+│   │   ├── SceneManager.ts # Scene management
+│   │   └── interfaces/ # Core interfaces
 │   ├── scenes/         # Game scenes
 │   │   ├── BaseScene.ts # Abstract scene class
-│   │   └── MainScene.ts # Demo scene
+│   │   ├── MainScene.ts # Demo scene
+│   │   └── ResourceDemoScene.ts # Resource management demo
 │   ├── services/       # Services
-│   │   └── RenderService.ts # Rendering service
+│   │   ├── RenderService.ts # Rendering service
+│   │   ├── ResourceManager.ts # Resource management service
+│   │   ├── ResourceCache.ts # Resource caching service
+│   │   └── loaders/    # Resource type loaders
+│   │       ├── TextureLoader.ts # Texture loading
+│   │       ├── ModelLoader.ts # 3D model loading
+│   │       ├── AudioLoader.ts # Audio loading
+│   │       └── JsonLoader.ts # JSON loading
 │   ├── utils/          # Utilities
-│   │   └── InputManager.ts # Input handling
+│   │   ├── InputManager.ts # Input handling
+│   │   └── AssetCreator.ts # Asset creation utilities
 │   └── index.ts        # Application entry point
-└── webpack.config.js   # Webpack configuration
+├── assets/             # Asset files
+│   ├── textures/       # Texture files
+│   ├── models/         # 3D model files
+│   ├── audio/          # Audio files
+│   └── config/         # Configuration files
+└── docs/               # Documentation
+    ├── game-engine-architecture.md # Engine architecture guide
+    └── resource-management-system.md # Resource system documentation
 ```
 
 ## Getting Started

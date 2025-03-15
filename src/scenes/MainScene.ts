@@ -14,6 +14,7 @@ export class MainScene extends Scene {
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
   private backButton: THREE.Mesh | null = null;
+  private resourceDemoButton: THREE.Mesh | null = null;
 
   constructor(sceneManager: SceneManager) {
     super();
@@ -58,6 +59,9 @@ export class MainScene extends Scene {
 
     // Add instructions to the page
     this.addInstructions();
+
+    // Add resource demo button
+    this.createResourceDemoButton();
   }
 
   private createCube(
@@ -173,6 +177,47 @@ export class MainScene extends Scene {
   }
 
   /**
+   * Create a button to navigate to the resource demo scene
+   */
+  private createResourceDemoButton(): void {
+    // Create a canvas for the button
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    canvas.width = 256;
+    canvas.height = 64;
+
+    // Style the button
+    context.fillStyle = '#2c3e50';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = '#2ecc71';
+    context.lineWidth = 4;
+    context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+    context.font = 'Bold 20px Arial';
+    context.fillStyle = '#ecf0f1';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('Resource Demo', canvas.width / 2, canvas.height / 2);
+
+    // Create a texture from the canvas
+    const texture = new THREE.CanvasTexture(canvas);
+
+    // Create a plane with the texture
+    const button = new THREE.Mesh(
+      new THREE.PlaneGeometry(2, 0.5),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+
+    // Position the button below the back button
+    button.position.set(6, 3.3, 0);
+    this.getThreeScene().add(button);
+
+    // Store reference for raycasting
+    this.resourceDemoButton = button;
+  }
+
+  /**
    * Handle mouse clicks
    */
   private onMouseClick(event: MouseEvent): void {
@@ -191,6 +236,19 @@ export class MainScene extends Scene {
       if (intersects.length > 0) {
         console.log('Back button clicked, returning to intro screen');
         this.sceneManager.switchScene('intro');
+      }
+    }
+
+    // Check if resource demo button was clicked
+    if (this.resourceDemoButton) {
+      const intersectsResourceDemo = this.raycaster.intersectObject(
+        this.resourceDemoButton
+      );
+      if (intersectsResourceDemo.length > 0) {
+        console.log(
+          'Resource demo button clicked, going to resource demo scene'
+        );
+        this.sceneManager.switchScene('resource-demo');
       }
     }
   }

@@ -1,0 +1,77 @@
+{
+  "name": "Resource Demo Scene",
+  "description": "A demo scene showing resource management capabilities",
+  "version": "1.0.0",
+  "settings": {
+    "lighting": {
+      "ambient": {
+        "color": "#404040",
+        "intensity": 0.5
+      },
+      "directional": {
+        "color": "#ffffff",
+        "intensity": 1.0,
+        "position": {
+          "x": 1,
+          "y": 1,
+          "z": 1
+        }
+      }
+    },
+    "camera": {
+      "position": {
+        "x": 0,
+        "y": 2,
+        "z": 10
+      },
+      "lookAt": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "fov": 75
+    },
+    "resources": {
+      "preload": true,
+      "unloadOnExit": true
+    }
+  },
+  "entities": [
+    {
+      "id": "textured-cube",
+      "type": "cube",
+      "position": {
+        "x": -3,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "material": {
+        "textureUrl": "assets/textures/crate.jpg",
+        "repeat": {
+          "x": 2,
+          "y": 2
+        }
+      }
+    },
+    {
+      "id": "model-example",
+      "type": "model",
+      "position": {
+        "x": 3,
+        "y": 0,
+        "z": 0
+      },
+      "modelUrl": "assets/models/cube.glb"
+    }
+  ]
+}
