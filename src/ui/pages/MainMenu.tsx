@@ -62,7 +62,7 @@ const MainMenu: React.FC = () => {
                   size='lg'
                   variant={
                     item.primary
-                      ? 'gradient'
+                      ? 'primary'
                       : item.danger
                       ? 'primary'
                       : 'secondary'
@@ -76,7 +76,7 @@ const MainMenu: React.FC = () => {
 
             <div className='mt-14 text-center'>
               <Text
-                size='xs'
+                size='sm'
                 color='text-text-subdued'
                 className='uppercase tracking-wide'
               >

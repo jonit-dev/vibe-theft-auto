@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     >
       {/* Main content container with flex centering */}
       <div className='flex items-center justify-center min-h-screen w-full'>
-        <div className='w-full max-w-lg p-4 md:p-8 z-10'>
+        <div className='w-full max-w-2xl p-4 md:p-8 z-10'>
           <Panel
             variant='translucent'
             glowColor='pink'
