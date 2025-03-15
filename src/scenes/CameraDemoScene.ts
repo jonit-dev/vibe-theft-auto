@@ -16,12 +16,17 @@ export class CameraDemoScene extends Scene {
   private inputManager: InputManager;
 
   private playerObject: THREE.Mesh;
+  private playerGameObject: THREE.Object3D | null = null;
   private cubes: THREE.Mesh[] = [];
   private controls: THREE.Group;
   private canvas: HTMLCanvasElement;
   private instructionsDiv: HTMLDivElement | null = null;
   private cameraSwitchButtons: HTMLDivElement | null = null;
   private activeCamera: string = 'follow';
+  private mouseMoveHandler: (event: MouseEvent) => void;
+  private mouseDownHandler: (event: MouseEvent) => void;
+  private mouseUpHandler: (event: MouseEvent) => void;
+  private wheelHandler: (event: WheelEvent) => void;
 
   constructor(
     cameraService: CameraService,
@@ -45,6 +50,12 @@ export class CameraDemoScene extends Scene {
     this.playerObject.position.set(0, 1, 0);
     this.playerObject.castShadow = true;
 
+    // Bind the event handlers - bind once to preserve references
+    this.mouseMoveHandler = this.handleMouseEvent.bind(this);
+    this.mouseDownHandler = this.handleMouseEvent.bind(this);
+    this.mouseUpHandler = this.handleMouseEvent.bind(this);
+    this.wheelHandler = this.handleMouseEvent.bind(this);
+
     // Create UI controls
     this.controls = new THREE.Group();
   }
@@ -55,6 +66,7 @@ export class CameraDemoScene extends Scene {
 
     // Create a game object for the player
     const playerGameObject = this.createGameObject('player');
+    this.playerGameObject = playerGameObject.getObject3D();
 
     // Add the playerObject to the game object's Object3D
     playerGameObject.getObject3D().position.copy(this.playerObject.position);
@@ -81,6 +93,8 @@ export class CameraDemoScene extends Scene {
 
     // Add event listener for canvas resize
     window.addEventListener('resize', this.onResize.bind(this));
+
+    console.log('CameraDemoScene initialized and entered');
   }
 
   public onExit(): void {
@@ -107,9 +121,10 @@ export class CameraDemoScene extends Scene {
 
     // Update camera target if needed
     const activeCamera = this.cameraService.getActiveCamera();
-    if (activeCamera) {
-      if (activeCamera.getTarget() !== this.playerObject) {
-        activeCamera.setTarget(this.playerObject);
+    if (activeCamera && this.playerGameObject) {
+      if (activeCamera.getTarget() !== this.playerGameObject) {
+        console.log('Updating camera target to player');
+        activeCamera.setTarget(this.playerGameObject);
       }
 
       // Update active camera indicator
@@ -187,14 +202,22 @@ export class CameraDemoScene extends Scene {
       offset: new THREE.Vector3(0, 3, 5),
       damping: 5,
     });
-    followCamera.setTarget(this.playerObject);
+
+    if (this.playerGameObject) {
+      followCamera.setTarget(this.playerGameObject);
+      console.log('Follow camera target set to player');
+    }
 
     // Create an orbit camera
     const orbitCamera = this.cameraService.createCamera('orbit', 'orbit', {
       radius: 10,
       initialPhi: Math.PI / 4,
     });
-    orbitCamera.setTarget(this.playerObject);
+
+    if (this.playerGameObject) {
+      orbitCamera.setTarget(this.playerGameObject);
+      console.log('Orbit camera target set to player');
+    }
 
     // Create a first-person camera
     const firstPersonCamera = this.cameraService.createCamera(
@@ -205,11 +228,16 @@ export class CameraDemoScene extends Scene {
         sensitivity: 0.2,
       }
     );
-    firstPersonCamera.setTarget(this.playerObject);
+
+    if (this.playerGameObject) {
+      firstPersonCamera.setTarget(this.playerGameObject);
+      console.log('First person camera target set to player');
+    }
 
     // Set the follow camera as active by default
     this.cameraService.setActiveCamera('follow');
     this.activeCamera = 'follow';
+    console.log('Active camera set to follow');
   }
 
   private createUI(): void {
@@ -340,6 +368,7 @@ export class CameraDemoScene extends Scene {
   private setupInputHandling(): void {
     // Set up keyboard controls for camera switching
     document.addEventListener('keydown', (event) => {
+      console.log(`Camera demo key pressed: ${event.code}`);
       if (event.code === 'Digit1') {
         this.cameraService.transitionTo('follow', 1.0);
       } else if (event.code === 'Digit2') {
@@ -352,15 +381,23 @@ export class CameraDemoScene extends Scene {
       }
     });
 
-    // Set up mouse handlers for orbit camera
-    this.canvas.addEventListener('mousedown', this.handleMouseEvent.bind(this));
-    this.canvas.addEventListener('mouseup', this.handleMouseEvent.bind(this));
-    this.canvas.addEventListener('mousemove', this.handleMouseEvent.bind(this));
-    this.canvas.addEventListener('wheel', this.handleMouseEvent.bind(this));
+    // Set up mouse handlers for camera control
+    this.canvas.addEventListener('mousemove', this.mouseMoveHandler);
+    this.canvas.addEventListener('mousedown', this.mouseDownHandler);
+    this.canvas.addEventListener('mouseup', this.mouseUpHandler);
+    this.canvas.addEventListener('wheel', this.wheelHandler);
+
+    console.log('Input handlers set up');
   }
 
   private handleMouseEvent(event: MouseEvent | WheelEvent): void {
     const activeCamera = this.cameraService.getActiveCamera();
+
+    if (!activeCamera) return;
+
+    console.log(
+      `Mouse event for camera ${activeCamera.getName()}: ${event.type}`
+    );
 
     if (activeCamera instanceof OrbitCamera) {
       activeCamera.handleInput(event, this.canvas);
@@ -374,19 +411,10 @@ export class CameraDemoScene extends Scene {
 
   private disposeScene(): void {
     // Remove all event listeners
-    this.canvas.removeEventListener(
-      'mousedown',
-      this.handleMouseEvent.bind(this)
-    );
-    this.canvas.removeEventListener(
-      'mouseup',
-      this.handleMouseEvent.bind(this)
-    );
-    this.canvas.removeEventListener(
-      'mousemove',
-      this.handleMouseEvent.bind(this)
-    );
-    this.canvas.removeEventListener('wheel', this.handleMouseEvent.bind(this));
+    this.canvas.removeEventListener('mousedown', this.mouseDownHandler);
+    this.canvas.removeEventListener('mouseup', this.mouseUpHandler);
+    this.canvas.removeEventListener('mousemove', this.mouseMoveHandler);
+    this.canvas.removeEventListener('wheel', this.wheelHandler);
 
     // Dispose geometries and materials
     this.playerObject.geometry.dispose();

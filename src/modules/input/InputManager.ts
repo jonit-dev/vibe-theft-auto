@@ -18,6 +18,8 @@ export class InputManager {
     window.addEventListener('mousemove', this.onMouseMove.bind(this));
     window.addEventListener('mousedown', this.onMouseDown.bind(this));
     window.addEventListener('mouseup', this.onMouseUp.bind(this));
+
+    console.log('InputManager initialized');
   }
 
   /**
@@ -33,6 +35,11 @@ export class InputManager {
    * Returns true only on the first frame the key is down
    */
   public isKeyJustPressed(key: string): boolean {
+    // Check both the key and the key code
+    return this.isCodeJustPressed(key) || this.isKeyJustPressed2(key);
+  }
+
+  private isKeyJustPressed2(key: string): boolean {
     const normalizedKey = key.toLowerCase();
     return (
       this.keys.get(normalizedKey) === true &&
@@ -40,11 +47,20 @@ export class InputManager {
     );
   }
 
+  private isCodeJustPressed(code: string): boolean {
+    return this.keys.get(code) === true && this.previousKeys.get(code) !== true;
+  }
+
   /**
    * Check if a key is currently down
    */
   public isKeyDown(key: string): boolean {
-    return this.keys.get(key.toLowerCase()) || false;
+    // Check in various formats - as a key and as a code
+    return (
+      this.keys.get(key) === true ||
+      this.keys.get(key.toLowerCase()) === true ||
+      this.keys.get('Key' + key.toUpperCase()) === true
+    );
   }
 
   /**
@@ -82,11 +98,17 @@ export class InputManager {
   }
 
   private onKeyDown(event: KeyboardEvent): void {
+    // Store both the key and the keyCode for compatibility
     this.keys.set(event.key.toLowerCase(), true);
+    this.keys.set(event.code, true);
+    console.log(`Key down: ${event.key}, code: ${event.code}`);
   }
 
   private onKeyUp(event: KeyboardEvent): void {
+    // Clear both the key and the keyCode for compatibility
     this.keys.set(event.key.toLowerCase(), false);
+    this.keys.set(event.code, false);
+    console.log(`Key up: ${event.key}, code: ${event.code}`);
   }
 
   private onMouseMove(event: MouseEvent): void {

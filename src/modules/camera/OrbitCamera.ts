@@ -31,7 +31,7 @@ export class OrbitCamera extends Camera {
   private minPhi: number;
   private maxPhi: number;
   private isDragging: boolean = false;
-  private previousMousePosition: THREE.Vector2 = new THREE.Vector2();
+  private previousMousePosition: { x: number; y: number } = { x: 0, y: 0 };
 
   constructor(options: OrbitCameraOptions = {}) {
     super('orbitCamera');
@@ -54,13 +54,12 @@ export class OrbitCamera extends Camera {
       options.far || 1000
     );
 
-    // Update camera position
+    // Initial update to position the camera
     this.updateCameraPosition();
   }
 
   /**
-   * Set the orbit radius
-   * @param radius - The radius value
+   * Set the radius (distance from target)
    */
   public setRadius(radius: number): void {
     this.radius = Math.max(this.minRadius, Math.min(this.maxRadius, radius));
@@ -68,13 +67,13 @@ export class OrbitCamera extends Camera {
   }
 
   /**
-   * Set the minimum and maximum orbit radius
-   * @param min - The minimum radius
-   * @param max - The maximum radius
+   * Set the minimum and maximum radius limits
    */
   public setRadiusLimits(min: number, max: number): void {
     this.minRadius = min;
     this.maxRadius = max;
+
+    // Ensure current radius is within limits
     this.radius = Math.max(
       this.minRadius,
       Math.min(this.maxRadius, this.radius)
@@ -84,62 +83,80 @@ export class OrbitCamera extends Camera {
 
   /**
    * Set the rotation speed
-   * @param speed - The rotation speed value
    */
   public setRotationSpeed(speed: number): void {
     this.rotationSpeed = speed;
   }
 
   /**
-   * Handle input for camera rotation and zooming
-   * @param inputManager - The input manager
-   * @param canvas - The canvas element
+   * Handle mouse input for orbit controls
    */
   public handleInput(
     event: MouseEvent | WheelEvent,
     canvas: HTMLCanvasElement
   ): void {
-    const rect = canvas.getBoundingClientRect();
+    console.log(`OrbitCamera handling input: ${event.type}`);
 
     // Handle mouse wheel for zooming
     if (event instanceof WheelEvent) {
-      const zoomAmount = event.deltaY * 0.001 * this.rotationSpeed;
+      const zoomAmount = event.deltaY * 0.005; // Increased sensitivity
       this.radius = Math.max(
         this.minRadius,
         Math.min(this.maxRadius, this.radius + zoomAmount)
       );
+      console.log(`Zoom adjusted to radius: ${this.radius}`);
       this.updateCameraPosition();
       return;
     }
 
     // Handle mouse movement for rotation
     if (event instanceof MouseEvent) {
-      const mouseX = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
-      const mouseY =
-        -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
-      const currentMousePosition = new THREE.Vector2(mouseX, mouseY);
-
       // Handle mouse down
       if (event.type === 'mousedown' && event.button === 0) {
         this.isDragging = true;
-        this.previousMousePosition.copy(currentMousePosition);
+        this.previousMousePosition = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+        console.log('Mouse down - starting orbit drag');
       }
       // Handle mouse up
       else if (event.type === 'mouseup' && event.button === 0) {
         this.isDragging = false;
+        console.log('Mouse up - ending orbit drag');
       }
       // Handle mouse move
       else if (event.type === 'mousemove' && this.isDragging) {
-        const deltaX = currentMousePosition.x - this.previousMousePosition.x;
-        const deltaY = currentMousePosition.y - this.previousMousePosition.y;
+        // Calculate mouse movement directly from screen pixels
+        const deltaX =
+          (event.clientX - this.previousMousePosition.x) *
+          0.01 *
+          this.rotationSpeed;
+        const deltaY =
+          (event.clientY - this.previousMousePosition.y) *
+          0.01 *
+          this.rotationSpeed;
 
-        this.theta -= deltaX * this.rotationSpeed;
+        // Update angles based on mouse movement
+        this.theta -= deltaX;
         this.phi = Math.max(
           this.minPhi,
-          Math.min(this.maxPhi, this.phi - deltaY * this.rotationSpeed)
+          Math.min(this.maxPhi, this.phi - deltaY)
         );
 
-        this.previousMousePosition.copy(currentMousePosition);
+        console.log(
+          `Orbit updated: theta=${this.theta.toFixed(
+            2
+          )}, phi=${this.phi.toFixed(2)}`
+        );
+
+        // Store current mouse position for next frame
+        this.previousMousePosition = {
+          x: event.clientX,
+          y: event.clientY,
+        };
+
+        // Update camera position based on new angles
         this.updateCameraPosition();
       }
     }
@@ -151,30 +168,39 @@ export class OrbitCamera extends Camera {
   private updateCameraPosition(): void {
     if (!this.target) return;
 
-    // Calculate position using spherical coordinates
-    const x = this.radius * Math.sin(this.phi) * Math.cos(this.theta);
+    // Calculate position in spherical coordinates
+    const x = this.radius * Math.sin(this.phi) * Math.sin(this.theta);
     const y = this.radius * Math.cos(this.phi);
-    const z = this.radius * Math.sin(this.phi) * Math.sin(this.theta);
+    const z = this.radius * Math.sin(this.phi) * Math.cos(this.theta);
 
-    // Position the camera relative to the target
+    const targetPosition = new THREE.Vector3();
+    this.target.getWorldPosition(targetPosition);
+
+    // Set camera position relative to target
     this.camera.position.set(
-      this.target.position.x + x,
-      this.target.position.y + y,
-      this.target.position.z + z
+      targetPosition.x + x,
+      targetPosition.y + y,
+      targetPosition.z + z
     );
 
     // Look at the target
-    this.camera.lookAt(this.target.position);
+    this.camera.lookAt(targetPosition);
+
+    // Update projection matrix if it's a PerspectiveCamera or OrthographicCamera
+    if (
+      this.camera instanceof THREE.PerspectiveCamera ||
+      this.camera instanceof THREE.OrthographicCamera
+    ) {
+      this.camera.updateProjectionMatrix();
+    }
   }
 
   /**
-   * Update the camera position and rotation
-   * @param deltaTime - Time in seconds since the last frame
+   * Update camera position each frame
    */
   public update(deltaTime: number): void {
-    if (!this.target) return;
-
-    // Update the camera position if the target has moved
-    this.updateCameraPosition();
+    if (this.target) {
+      this.updateCameraPosition();
+    }
   }
 }

@@ -67,12 +67,15 @@ export class PlayerMovementComponent extends Component {
       this.isGrounded = true;
     }
 
-    // Handle jumping
+    // Handle jumping - check for both 'Space' and ' ' (spacebar)
     if (
-      this.inputManager.isKeyPressed('Space') &&
+      (this.inputManager.isKeyPressed('Space') ||
+        this.inputManager.isKeyPressed(' ') ||
+        this.inputManager.isKeyPressed('space')) &&
       this.isGrounded &&
       this.jumpCooldown <= 0
     ) {
+      console.log('Jump triggered!');
       this.velocity.y = this.jumpForce;
       this.isGrounded = false;
       this.jumpCooldown = 0.3; // Prevent jump spam
@@ -100,28 +103,32 @@ export class PlayerMovementComponent extends Component {
     const right = new THREE.Vector3();
     right.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
 
-    // Add movement based on key input
+    // Add movement based on key input - check multiple key formats
     if (
       this.inputManager.isKeyPressed('KeyW') ||
-      this.inputManager.isKeyPressed('w')
+      this.inputManager.isKeyPressed('w') ||
+      this.inputManager.isKeyPressed('W')
     ) {
       direction.add(cameraDirection);
     }
     if (
       this.inputManager.isKeyPressed('KeyS') ||
-      this.inputManager.isKeyPressed('s')
+      this.inputManager.isKeyPressed('s') ||
+      this.inputManager.isKeyPressed('S')
     ) {
       direction.sub(cameraDirection);
     }
     if (
       this.inputManager.isKeyPressed('KeyA') ||
-      this.inputManager.isKeyPressed('a')
+      this.inputManager.isKeyPressed('a') ||
+      this.inputManager.isKeyPressed('A')
     ) {
       direction.sub(right);
     }
     if (
       this.inputManager.isKeyPressed('KeyD') ||
-      this.inputManager.isKeyPressed('d')
+      this.inputManager.isKeyPressed('d') ||
+      this.inputManager.isKeyPressed('D')
     ) {
       direction.add(right);
     }
