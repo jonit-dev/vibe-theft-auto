@@ -1,5 +1,13 @@
 /* Import Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import "tailwindcss";
+
+/* Box sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 @tailwind base;
 @tailwind components;
@@ -35,26 +43,31 @@
   --color-text-subdued: #9D98B3;
 }
 
-/* Base styles applied directly without @apply to ensure fonts work properly */
-body,
-html {
-  height: 100%;
-  width: 100%;
-  font-family: 'Outrun Future', 'Press Start 2P', sans-serif;
-  background-color: var(--color-miami-black);
-  color: var(--color-text-white);
-}
+/* Add proper base layer customizations */
+@layer base {
 
-canvas {
-  display: block;
-}
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+    font-family: 'Outrun Future', 'Press Start 2P', sans-serif;
+    background-color: var(--color-miami-black);
+    color: var(--color-text-white);
+    margin: 0;
+    padding: 0;
+  }
 
-#root {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  canvas {
+    display: block;
+  }
+
+  #root {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 /* Screen reader only - accessibility utility */
