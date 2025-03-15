@@ -2,6 +2,7 @@ import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
 import { EventBus } from '@/services/EventBus';
 import { RenderService } from '@/services/RenderService';
+import { ResourceManager } from '@/services/ResourceManager';
 import { EntityBuilder } from '@/utils/EntityBuilder';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
@@ -15,6 +16,7 @@ export class EntityDemoScene extends Scene {
   private sceneManager: SceneManager;
   private renderService: RenderService;
   private entityBuilder: EntityBuilder;
+  private resourceManager: ResourceManager;
   private eventBus: EventBus;
 
   // Keep track of game objects for updating
@@ -34,12 +36,14 @@ export class EntityDemoScene extends Scene {
     sceneManager: SceneManager,
     renderService: RenderService,
     entityBuilder: EntityBuilder,
+    resourceManager: ResourceManager,
     eventBus: EventBus
   ) {
     super();
     this.sceneManager = sceneManager;
     this.renderService = renderService;
     this.entityBuilder = entityBuilder;
+    this.resourceManager = resourceManager;
     this.eventBus = eventBus;
   }
 
@@ -52,33 +56,58 @@ export class EntityDemoScene extends Scene {
     // Create UI elements
     this.createUI();
 
-    // Setup event listeners
-    document.addEventListener('click', this.onMouseClick.bind(this));
+    // Create a scene background
+    this.getThreeScene().background = new THREE.Color(0x111111);
 
-    // Set up camera position
-    this.renderService.getCamera().position.set(0, 10, 20);
-    this.renderService.getCamera().lookAt(0, 0, 0);
+    // Remove the grid and any other helpers that might be causing issues
+    this.getThreeScene().traverse((child) => {
+      if (
+        child instanceof THREE.GridHelper ||
+        child instanceof THREE.AxesHelper ||
+        (child instanceof THREE.Mesh &&
+          child.material &&
+          child.material.wireframe &&
+          child.geometry instanceof THREE.SphereGeometry)
+      ) {
+        if (child.parent) {
+          child.parent.remove(child);
+        }
+      }
+    });
+
+    // Set up camera position first to prevent issues
+    const camera = this.renderService.getCamera();
+    camera.position.set(10, 7, 15);
+    camera.lookAt(0, 1, 0);
+
+    // Create terrain first so other objects can be positioned on it
+    await this.createTerrain();
 
     // Add lights using EntityBuilder
     this.addLights();
 
-    // Create a simple textured cube
+    // Create entities
     await this.createTexturedCube();
-
-    // Create car model
     await this.createCarModel();
-
-    // Create terrain
-    await this.createTerrain();
-
-    // Create sound entity
     await this.createSoundEntity();
-
-    // Create waypoints
     this.createWaypoints();
 
     // Add back button
     this.createBackButton();
+
+    // Setup event listeners last to ensure everything is initialized
+    document.addEventListener('click', this.onMouseClick.bind(this));
+
+    // Override any camera controls that might reset the position
+    const resetCamera = () => {
+      camera.position.set(10, 7, 15);
+      camera.lookAt(0, 1, 0);
+    };
+
+    // Apply camera reset multiple times to overcome any potential overrides
+    setTimeout(resetCamera, 100);
+    setTimeout(resetCamera, 500);
+    setTimeout(resetCamera, 1000);
   }
 
   /**
@@ -93,6 +122,9 @@ export class EntityDemoScene extends Scene {
       document.body.removeChild(this.statusText);
       this.statusText = null;
     }
+
+    // Stop any playing audio
+    this.stopAudio();
 
     // Clear all entities
     this.clearAllEntities();
@@ -129,27 +161,70 @@ export class EntityDemoScene extends Scene {
     this.entityBuilder.createLightEntity({
       type: 'ambient',
       color: 0x404040,
-      intensity: 0.5,
+      intensity: 0.6,
     });
 
     // Create directional light (sun)
     this.entityBuilder.createLightEntity({
       type: 'directional',
-      color: 0xffffff,
-      intensity: 0.8,
-      position: new THREE.Vector3(10, 10, 10),
+      color: 0xffffcc,
+      intensity: 1.0,
+      position: new THREE.Vector3(5, 8, 4),
       castShadow: true,
     });
 
-    // Create a point light
+    // Create a blue point light for accent
     this.entityBuilder.createLightEntity({
       type: 'point',
-      color: 0x2288ff,
-      intensity: 1,
-      position: new THREE.Vector3(-5, 3, 0),
+      color: 0x0066ff,
+      intensity: 1.5,
+      position: new THREE.Vector3(-4, 2, -2),
     });
 
     this.updateStatus('Added lights using EntityBuilder');
+  }
+
+  /**
+   * Create terrain
+   */
+  private async createTerrain(): Promise<void> {
+    try {
+      // Use the dry riverbed rock texture
+      const texturePath = 'assets/textures/terrain/dry_riverbed_rock.webp';
+
+      // Create a simple flat terrain with the texture
+      // Instead of using heightmap displacement which doesn't look good with this texture
+      const planeGeometry = new THREE.PlaneGeometry(40, 40, 1, 1);
+      const texture = new THREE.TextureLoader().load(texturePath);
+
+      // Set texture to repeat for better scale
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(8, 8);
+
+      const groundMaterial = new THREE.MeshStandardMaterial({
+        map: texture,
+        roughness: 1.0,
+        metalness: 0.0,
+      });
+
+      const groundMesh = new THREE.Mesh(planeGeometry, groundMaterial);
+      groundMesh.rotation.x = -Math.PI / 2; // Lay flat
+      groundMesh.position.y = -0.5; // Slightly below origin
+      groundMesh.receiveShadow = true;
+
+      // Add to scene directly
+      this.getThreeScene().add(groundMesh);
+
+      // Create a GameObject to track this
+      this.terrain = this.createGameObject('terrain-ground');
+      this.terrain.getObject3D().add(new THREE.Object3D()); // Empty object for tracking
+
+      this.updateStatus('Created terrain with dry riverbed rock texture');
+    } catch (error) {
+      console.error('Error creating terrain:', error);
+      this.updateStatus(`Error creating terrain: ${error}`);
+    }
   }
 
   /**
@@ -159,8 +234,8 @@ export class EntityDemoScene extends Scene {
     try {
       await this.entityBuilder.createTexturedCube({
         textureUrl: 'assets/textures/crate.webp',
-        position: new THREE.Vector3(-5, 0, 0),
-        size: 2,
+        position: new THREE.Vector3(-5, 0.5, -3),
+        size: 1.5,
         tags: ['entity-demo'],
       });
 
@@ -178,7 +253,7 @@ export class EntityDemoScene extends Scene {
     try {
       this.car = await this.entityBuilder.createModelEntity({
         modelUrl: 'assets/models/vice-city-car.glb',
-        position: new THREE.Vector3(0, 0, 0),
+        position: new THREE.Vector3(3, 0, 2),
         scale: new THREE.Vector3(0.5, 0.5, 0.5),
         name: 'demo-car',
         tags: ['entity-demo'],
@@ -192,45 +267,80 @@ export class EntityDemoScene extends Scene {
   }
 
   /**
-   * Create terrain
-   */
-  private async createTerrain(): Promise<void> {
-    try {
-      // Use the dry riverbed rock texture as both the diffuse texture and heightmap
-      const texturePath = 'assets/textures/terrain/dry_riverbed_rock.webp';
-
-      this.terrain = await this.entityBuilder.createTerrain({
-        heightmapUrl: texturePath, // Use the same texture as a heightmap
-        diffuseTextureUrl: texturePath,
-        width: 50,
-        height: 3, // Reduce the height to make terrain displacement less extreme
-        depth: 50,
-        position: new THREE.Vector3(0, -2, 0),
-        tags: ['entity-demo'],
-      });
-
-      this.updateStatus('Created terrain with dry riverbed rock texture');
-    } catch (error) {
-      console.error('Error creating terrain:', error);
-      this.updateStatus(`Error creating terrain: ${error}`);
-    }
-  }
-
-  /**
    * Create sound entity
    */
   private async createSoundEntity(): Promise<void> {
     try {
-      await this.entityBuilder.createSoundEntity({
-        audioUrl: 'assets/audio/retrowave.mp3',
-        position: new THREE.Vector3(5, 0, 5),
+      // Create a customized sound entity with better visualization
+      const gameObject = this.createGameObject('sound-entity');
+      const object3D = gameObject.getObject3D();
+
+      // Position it in the scene
+      object3D.position.set(-2, 0.5, -6);
+
+      // Load audio
+      const audioBuffer = await this.resourceManager.load<AudioBuffer>(
+        'audio',
+        'assets/audio/retrowave.mp3',
+        { tags: ['entity-demo'] }
+      );
+
+      // Store audio data in the object for use with an audio component
+      object3D.userData.audio = {
+        buffer: audioBuffer,
         autoplay: true,
         loop: true,
-        radius: 15,
-        tags: ['entity-demo'],
+        volume: 1,
+        radius: 8,
+      };
+
+      // Create a more visible but non-intrusive speaker symbol
+      const speakerGroup = new THREE.Group();
+
+      // Main speaker body
+      const speakerBody = new THREE.Mesh(
+        new THREE.BoxGeometry(0.4, 0.4, 0.2),
+        new THREE.MeshStandardMaterial({ color: 0x333333 })
+      );
+      speakerGroup.add(speakerBody);
+
+      // Speaker cone
+      const coneMaterial = new THREE.MeshStandardMaterial({
+        color: 0x22cc22,
+        emissive: 0x116611,
+        metalness: 0.5,
+        roughness: 0.2,
+      });
+      const cone = new THREE.Mesh(
+        new THREE.CircleGeometry(0.15, 16),
+        coneMaterial
+      );
+      cone.position.z = 0.11;
+      speakerGroup.add(cone);
+
+      // Add some sound wave indicators (small rings)
+      [0.3, 0.6, 0.9].forEach((radius) => {
+        const ring = new THREE.Mesh(
+          new THREE.RingGeometry(radius - 0.03, radius, 16),
+          new THREE.MeshBasicMaterial({
+            color: 0x22cc22,
+            transparent: true,
+            opacity: 0.5 - radius * 0.3, // fade out with distance
+          })
+        );
+        ring.position.z = 0.12;
+        speakerGroup.add(ring);
       });
 
-      this.updateStatus('Created sound entity using EntityBuilder');
+      // Add the speaker to the object
+      object3D.add(speakerGroup);
+
+      // Actually play the sound using Web Audio API
+      this.playAudio(audioBuffer);
+
+      this.updateStatus(
+        'Created sound entity with speaker visualization and started audio playback'
+      );
     } catch (error) {
       console.error('Error creating sound entity:', error);
       this.updateStatus(`Error creating sound entity: ${error}`);
@@ -238,16 +348,54 @@ export class EntityDemoScene extends Scene {
   }
 
   /**
+   * Play audio buffer using Web Audio API
+   */
+  private playAudio(buffer: AudioBuffer): void {
+    try {
+      // Create audio context
+      const audioContext = new (window.AudioContext ||
+        (window as any).webkitAudioContext)();
+
+      // Create audio source from buffer
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+
+      // Create gain node for volume control
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0.5; // Set volume to 50%
+
+      // Connect nodes: source -> gain -> destination
+      source.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+
+      // Set looping
+      source.loop = true;
+
+      // Start playback
+      source.start(0);
+
+      // Store references for cleanup
+      this.getThreeScene().userData.audioContext = audioContext;
+      this.getThreeScene().userData.audioSource = source;
+
+      console.log('Started audio playback');
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      this.updateStatus(`Error playing audio: ${error}`);
+    }
+  }
+
+  /**
    * Create waypoints
    */
   private createWaypoints(): void {
-    // Create a path of waypoints
+    // Create a more meaningful path of waypoints around the scene
     const waypointPositions = [
-      new THREE.Vector3(-10, 0, -10),
-      new THREE.Vector3(-5, 0, -8),
-      new THREE.Vector3(0, 0, -5),
-      new THREE.Vector3(5, 0, -8),
-      new THREE.Vector3(10, 0, -10),
+      new THREE.Vector3(-8, 0.5, 4),
+      new THREE.Vector3(-4, 0.5, 8),
+      new THREE.Vector3(1, 0.5, 10),
+      new THREE.Vector3(6, 0.5, 8),
+      new THREE.Vector3(9, 0.5, 4),
     ];
 
     waypointPositions.forEach((position, index) => {
@@ -363,5 +511,28 @@ export class EntityDemoScene extends Scene {
       object.position.y =
         Math.sin(performance.now() * 0.001 + index) * 0.2 + 0.5;
     });
+  }
+
+  /**
+   * Stop any playing audio
+   */
+  private stopAudio(): void {
+    try {
+      const audioContext = this.getThreeScene().userData.audioContext;
+      const audioSource = this.getThreeScene().userData.audioSource;
+
+      if (audioSource) {
+        audioSource.stop();
+        audioSource.disconnect();
+      }
+
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close();
+      }
+
+      console.log('Stopped audio playback');
+    } catch (error) {
+      console.error('Error stopping audio:', error);
+    }
   }
 }
