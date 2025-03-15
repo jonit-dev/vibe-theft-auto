@@ -1,4 +1,5 @@
 import { IScene } from '@/core/interfaces/IScene';
+import { EventBus } from '@modules/events/EventBus';
 import { injectable, singleton } from 'tsyringe';
 
 @injectable()
@@ -7,8 +8,11 @@ export class SceneManager {
   private scenes: Map<string, IScene> = new Map();
   private currentScene: IScene | null = null;
 
-  constructor() {
-    // Empty constructor
+  constructor(private eventBus: EventBus) {
+    // Listen for scene:switch events
+    this.eventBus.on('scene:switch', (sceneName: string) => {
+      this.switchScene(sceneName);
+    });
   }
 
   public registerScene(name: string, scene: IScene): void {

@@ -15,6 +15,7 @@ export class MainScene extends Scene {
   private mouse = new THREE.Vector2();
   private backButton: THREE.Mesh | null = null;
   private resourceDemoButton: THREE.Mesh | null = null;
+  private cameraDemoButton: THREE.Mesh | null = null;
 
   constructor(sceneManager: SceneManager) {
     super();
@@ -60,8 +61,9 @@ export class MainScene extends Scene {
     // Add instructions to the page
     this.addInstructions();
 
-    // Add resource demo button
+    // Add demo scene buttons
     this.createResourceDemoButton();
+    this.createCameraDemoButton();
   }
 
   private createCube(
@@ -218,6 +220,47 @@ export class MainScene extends Scene {
   }
 
   /**
+   * Create a button to navigate to the camera demo scene
+   */
+  private createCameraDemoButton(): void {
+    // Create a canvas for the button
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    canvas.width = 256;
+    canvas.height = 64;
+
+    // Style the button
+    context.fillStyle = '#2c3e50';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = '#3498db';
+    context.lineWidth = 4;
+    context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+    context.font = 'Bold 20px Arial';
+    context.fillStyle = '#ecf0f1';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('Camera Demo', canvas.width / 2, canvas.height / 2);
+
+    // Create a texture from the canvas
+    const texture = new THREE.CanvasTexture(canvas);
+
+    // Create a plane with the texture
+    const button = new THREE.Mesh(
+      new THREE.PlaneGeometry(2, 0.5),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+
+    // Position the button below the resource demo button
+    button.position.set(6, 2.6, 0);
+    this.getThreeScene().add(button);
+
+    // Store reference for raycasting
+    this.cameraDemoButton = button;
+  }
+
+  /**
    * Handle mouse clicks
    */
   private onMouseClick(event: MouseEvent): void {
@@ -226,7 +269,7 @@ export class MainScene extends Scene {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Use the camera from RenderService directly
-    const camera = this.renderService.getCamera();
+    const camera = this.renderService.getDefaultCamera();
 
     this.raycaster.setFromCamera(this.mouse, camera);
 
@@ -248,7 +291,18 @@ export class MainScene extends Scene {
         console.log(
           'Resource demo button clicked, going to resource demo scene'
         );
-        this.sceneManager.switchScene('resource-demo');
+        this.sceneManager.switchScene('resourceDemo');
+      }
+    }
+
+    // Check if camera demo button was clicked
+    if (this.cameraDemoButton) {
+      const intersectsCameraDemo = this.raycaster.intersectObject(
+        this.cameraDemoButton
+      );
+      if (intersectsCameraDemo.length > 0) {
+        console.log('Camera demo button clicked, going to camera demo scene');
+        this.sceneManager.switchScene('cameraDemo');
       }
     }
   }

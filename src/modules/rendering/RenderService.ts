@@ -6,7 +6,7 @@ import { injectable, singleton } from 'tsyringe';
 @singleton()
 export class RenderService {
   private renderer: THREE.WebGLRenderer;
-  private camera: THREE.PerspectiveCamera;
+  private defaultCamera: THREE.PerspectiveCamera;
   private initialized: boolean = false;
 
   constructor() {
@@ -14,13 +14,13 @@ export class RenderService {
       antialias: true,
     });
 
-    this.camera = new THREE.PerspectiveCamera(
+    this.defaultCamera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
       1000
     );
-    this.camera.position.z = 5;
+    this.defaultCamera.position.z = 5;
 
     // Handle window resize
     window.addEventListener('resize', this.onResize.bind(this));
@@ -36,21 +36,45 @@ export class RenderService {
     this.initialized = true;
   }
 
-  public render(scene: IScene | null): void {
+  /**
+   * Render a scene with the specified camera
+   * @param scene - The scene to render
+   * @param camera - Optional camera to use (falls back to default camera)
+   */
+  public render(scene: IScene | null, camera?: THREE.Camera): void {
     if (!scene || !this.initialized) return;
 
-    this.renderer.render(scene.getThreeScene(), this.camera);
+    // Use the provided camera or fall back to the default camera
+    const renderCamera = camera || this.defaultCamera;
+
+    this.renderer.render(scene.getThreeScene(), renderCamera);
   }
 
-  public getCamera(): THREE.PerspectiveCamera {
-    return this.camera;
+  /**
+   * Get the default camera
+   */
+  public getDefaultCamera(): THREE.PerspectiveCamera {
+    return this.defaultCamera;
   }
 
+  /**
+   * Get the WebGL renderer
+   */
+  public getRenderer(): THREE.WebGLRenderer {
+    return this.renderer;
+  }
+
+  /**
+   * Handle window resize events
+   */
   private onResize(): void {
     if (!this.initialized) return;
 
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+    // Update default camera aspect ratio
+    this.defaultCamera.aspect = window.innerWidth / window.innerHeight;
+    this.defaultCamera.updateProjectionMatrix();
+
+    // Resize renderer
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 }

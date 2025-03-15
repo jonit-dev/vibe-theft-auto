@@ -76,7 +76,7 @@ export class EntityDemoScene extends Scene {
     });
 
     // Set up camera position first to prevent issues
-    const camera = this.renderService.getCamera();
+    const camera = this.renderService.getDefaultCamera();
     camera.position.set(10, 7, 15);
     camera.lookAt(0, 1, 0);
 
@@ -460,7 +460,10 @@ export class EntityDemoScene extends Scene {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Update the picking ray with the camera and mouse position
-    this.raycaster.setFromCamera(this.mouse, this.renderService.getCamera());
+    this.raycaster.setFromCamera(
+      this.mouse,
+      this.renderService.getDefaultCamera()
+    );
 
     // Check for intersections with back button
     if (this.backButton) {

@@ -8,6 +8,7 @@ import { Application } from './Application';
 import { ReactContainer } from './components/ReactContainer';
 import { Engine } from './core/Engine';
 import { SceneManager } from './core/SceneManager';
+import { CameraDemoScene } from './scenes/CameraDemoScene';
 import { EntityDemoScene } from './scenes/EntityDemoScene';
 import { EventDemoScene } from './scenes/EventDemoScene';
 import { IntroScene } from './scenes/IntroScene';
@@ -23,6 +24,8 @@ import {
   TextureLoader,
 } from '@modules/resources/loaders';
 import { IResourceLoader } from './core/interfaces/IResourceLoader';
+// Import camera components
+import { CameraService } from '@modules/camera';
 
 // Configure the dependency injection container
 export function setupContainer() {
@@ -34,6 +37,7 @@ export function setupContainer() {
   container.registerSingleton(EventBus);
   container.registerSingleton(ReactContainer);
   container.registerSingleton(UIService);
+  container.registerSingleton(CameraService);
 
   // Register resource management services
   container.registerSingleton(ResourceCache);
@@ -60,6 +64,7 @@ export function setupContainer() {
   container.registerSingleton(EventDemoScene);
   container.registerSingleton(ResourceDemoScene);
   container.registerSingleton(EntityDemoScene);
+  container.registerSingleton(CameraDemoScene);
 
   // Register the application
   container.registerSingleton(Application);

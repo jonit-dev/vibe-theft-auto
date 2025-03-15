@@ -522,7 +522,10 @@ export class ResourceDemoScene extends Scene {
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     // Update the picking ray with the camera and mouse position
-    this.raycaster.setFromCamera(this.mouse, this.renderService.getCamera());
+    this.raycaster.setFromCamera(
+      this.mouse,
+      this.renderService.getDefaultCamera()
+    );
 
     // Check for intersections
     if (this.backButton) {

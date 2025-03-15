@@ -85,6 +85,15 @@ export const IntroUI: React.FC<IntroUIProps> = ({ onSceneSelect }) => {
       >
         Entity Builder Demo
       </button>
+
+      <button
+        style={buttonStyle('cameraDemo')}
+        onClick={() => onSceneSelect('cameraDemo')}
+        onMouseEnter={() => setHoverButton('cameraDemo')}
+        onMouseLeave={() => setHoverButton(null)}
+      >
+        Camera System Demo
+      </button>
     </div>
   );
 };
