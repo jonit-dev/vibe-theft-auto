@@ -24,6 +24,7 @@ export class ResourceDemoScene extends Scene {
   private loadedModel: THREE.Group | null = null;
   private loadedAudio: AudioBuffer | null = null;
   private loadedJson: any = null;
+  private loadedRetrowaveAudio: AudioBuffer | null = null;
 
   // UI elements
   private progressBar: HTMLDivElement | null = null;
@@ -36,6 +37,9 @@ export class ResourceDemoScene extends Scene {
 
   // Resources to load - we'll generate them programmatically
   private resources: ResourceRequest[] = [];
+
+  // Track loaded car model
+  private loadedCarModel: THREE.Group | null = null;
 
   constructor(
     sceneManager: SceneManager,
@@ -188,6 +192,18 @@ export class ResourceDemoScene extends Scene {
       {
         type: 'json',
         url: 'dynamic/config.json',
+        options: { tags: ['resource-demo'] },
+      },
+      // Add the vice-city-car model
+      {
+        type: 'model',
+        url: 'assets/models/vice-city-car.glb',
+        options: { tags: ['resource-demo'] },
+      },
+      // Add retrowave audio
+      {
+        type: 'audio',
+        url: 'assets/audio/retrowave.mp3',
         options: { tags: ['resource-demo'] },
       },
     ];
@@ -390,12 +406,31 @@ export class ResourceDemoScene extends Scene {
         this.getThreeScene().add(this.loadedModel);
       }
 
-      // Load and play audio
+      // Load and display the vice-city-car model
+      this.loadedCarModel = await this.resourceManager.load<THREE.Group>(
+        'model',
+        'assets/models/vice-city-car.glb'
+      );
+      if (this.loadedCarModel) {
+        this.loadedCarModel.position.set(0, 0, 3);
+        this.loadedCarModel.scale.set(0.5, 0.5, 0.5); // Scale down if needed
+        this.getThreeScene().add(this.loadedCarModel);
+        this.updateStatus('🚗 Vice City Car model loaded successfully!');
+      }
+
+      // Load and play the generated audio tone
       this.loadedAudio = await this.resourceManager.load<AudioBuffer>(
         'audio',
         'dynamic/tone.mp3'
       );
-      this.playAudio(this.loadedAudio);
+
+      // Load and play retrowave audio
+      this.loadedRetrowaveAudio = await this.resourceManager.load<AudioBuffer>(
+        'audio',
+        'assets/audio/retrowave.mp3'
+      );
+      this.playAudio(this.loadedRetrowaveAudio);
+      this.updateStatus('🎵 Retrowave audio playing...');
 
       // Load JSON configuration
       this.loadedJson = await this.resourceManager.load<any>(
@@ -509,6 +544,11 @@ export class ResourceDemoScene extends Scene {
     // Rotate any loaded models
     if (this.loadedModel) {
       this.loadedModel.rotation.y += deltaTime * 0.5;
+    }
+
+    // Rotate the car model
+    if (this.loadedCarModel) {
+      this.loadedCarModel.rotation.y += deltaTime * 0.3;
     }
   }
 }

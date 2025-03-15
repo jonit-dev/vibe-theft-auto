@@ -74,12 +74,55 @@ classDiagram
 
 ## 3. Resource Types Support
 
-- **Textures**: PNG, JPG, WebP images for materials and UI
-- **3D Models**: GLTF/GLB, OBJ, FBX formats
-- **Audio**: MP3, WAV files for sound effects and music
+### Recommended Formats & Sources
+
+#### Textures
+
+- **WebP**: Primary format (~30% better compression than PNG/JPG)
+  - Conversion tools: [Squoosh](https://squoosh.app/), [cwebp](https://developers.google.com/speed/webp/docs/cwebp)
+  - Generate from design tools via plugins for Photoshop, GIMP, etc.
+- **KTX2/Basis Universal**: GPU-compressed formats for optimal performance
+  - Tools: [KTX-Software](https://github.com/KhronosGroup/KTX-Software), [Basis Universal](https://github.com/BinomialLLC/basis_universal)
+  - Excellent for high-performance textures that need fast loading
+- **PNG**: Use for alpha channel when WebP isn't supported
+- **JPEG**: Only for photographs without transparency needs
+
+#### 3D Models
+
+- **glTF/GLB**: Primary format (industry standard for web)
+  - Sources: [Sketchfab](https://sketchfab.com/), [Google Poly](https://poly.pizza/)
+  - Export from: Blender, Maya, 3ds Max, Cinema 4D (via glTF exporters)
+  - Verification tool: [glTF Validator](https://github.khronos.org/glTF-Validator/)
+- **Draco-compressed glTF**: For optimized mesh delivery (70-95% size reduction)
+  - Compress using: [gltf-pipeline](https://github.com/CesiumGS/gltf-pipeline), Blender export options
+- **OBJ/FBX**: Legacy support only, convert to glTF when possible
+
+#### Audio
+
+- **MP3**: Standard format for most audio content (128-192kbps recommended)
+  - Sources: [Freesound](https://freesound.org/), [OpenGameArt](https://opengameart.org/)
+  - Tools: Audacity, Adobe Audition, FFMPEG for conversion
+- **WebM/Ogg**: Alternative format with better compression but less support
+- **WAV**: Uncompressed format, use only for short sound effects
+
+#### Other Assets
+
 - **JSON**: For configuration, level data, etc.
-- **Shaders**: GLSL shader code
-- **Fonts**: For text rendering
+- **GLSL/Shader**: Custom shader code
+  - Store as raw text files or JSON
+  - Tools: [Shader Playground](https://www.shadertoy.com/), VS Code with GLSL plugins
+- **Fonts**:
+  - WOFF2: Most efficient web font format
+  - Sources: [Google Fonts](https://fonts.google.com/), [Font Squirrel](https://www.fontsquirrel.com/)
+
+### Asset Optimization Guidelines
+
+- Pre-process textures to power-of-two dimensions (256, 512, 1024, 2048)
+- Use texture atlases to combine multiple small textures
+- Apply mipmaps for distant objects
+- Consider using sprite sheets for animated 2D elements
+- Set appropriate compression levels based on visual quality requirements
+- Store PBR material textures (normal, roughness, metallic) in appropriate channels
 
 ## 4. Loading Pipeline
 
@@ -227,96 +270,3 @@ async function preloadLevel(levelId: string): Promise<void> {
   await Promise.all(tasks);
 }
 ```
-
-## 8. Resource Unloading and Cleanup
-
-```typescript
-// Scene cleanup on exit
-function cleanupScene(): void {
-  // Unload non-persistent resources associated with the scene
-  resourceManager.unloadByTag('level-1');
-}
-
-// Application shutdown
-function shutdown(): void {
-  // Release all resources
-  resourceManager.unloadAll();
-}
-```
-
-## 9. Resource Organization
-
-### Directory Structure
-
-```
-assets/
-├── textures/
-│   ├── environment/
-│   ├── characters/
-│   └── ui/
-├── models/
-│   ├── environment/
-│   ├── characters/
-│   └── props/
-├── audio/
-│   ├── music/
-│   └── sfx/
-└── shaders/
-    ├── common/
-    └── postprocess/
-```
-
-### Manifest Files
-
-```json
-{
-  "name": "Level 1",
-  "resources": {
-    "textures": [
-      {
-        "url": "textures/environment/grass.jpg",
-        "options": { "wrapS": "repeat", "wrapT": "repeat" }
-      },
-      {
-        "url": "textures/characters/player.png",
-        "options": { "persistent": true }
-      }
-    ],
-    "models": [
-      { "url": "models/environment/level1.glb", "options": { "scale": 1.0 } },
-      { "url": "models/characters/enemy1.glb", "options": {} }
-    ],
-    "audio": [
-      { "url": "audio/music/level1_theme.mp3", "options": { "volume": 0.8 } },
-      { "url": "audio/sfx/explosion.wav", "options": {} }
-    ]
-  }
-}
-```
-
-## 10. Progress Tracking and Error Handling
-
-```typescript
-interface LoadingProgress {
-  resourceId: string;
-  progress: number; // 0-1
-  status: 'loading' | 'complete' | 'error';
-  error?: Error;
-}
-
-// Loading with progress reporting
-async function loadLevelWithProgress(
-  levelId: string,
-  onProgress: (overall: number, details: LoadingProgress[]) => void
-): Promise<void> {
-  // Implementation with progress callbacks
-}
-```
-
-## 11. Future Expansion
-
-- **Resource Streaming**: Load and unload resources dynamically during gameplay
-- **LOD System**: Multiple detail levels for models and textures
-- **Asset Processing Pipeline**: Build-time optimization of assets
-- **Compressed Texture Support**: KTX2, basis universal formats
-- **Asset Bundles**: Group resources together in downloadable packages
