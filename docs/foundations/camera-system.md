@@ -2,7 +2,7 @@
 
 ## Overview
 
-The camera system provides a flexible framework for managing different camera types and behaviors within our ThreeJS game engine. This system integrates with the existing architecture to deliver dynamic viewpoints for game scenes.
+The camera system provides a flexible framework for managing different camera types and behaviors within our ThreeJS game engine. The system allows for easy switching between camera modes, transitions, and specialized camera behaviors for different gameplay scenarios.
 
 ## Core Architecture
 
@@ -12,29 +12,44 @@ classDiagram
         -cameras: Map<string, Camera>
         -activeCamera: Camera
         -transitions: CameraTransition[]
+        -eventCallbacks: Map<string, Function[]>
         +registerCamera(name, camera): void
+        +createCamera(name, type, options): Camera
         +setActiveCamera(name): void
         +getActiveCamera(): Camera
-        +createCamera(name, type, options): Camera
-        +transitionTo(name, duration): void
+        +getCamera(name): Camera
+        +getAllCameras(): Map<string, Camera>
+        +removeCamera(name): void
+        +transitionTo(name, options): void
+        +on(event, callback): void
+        +off(event, callback): void
         +update(deltaTime): void
+        +getThreeCamera(): THREE.Camera
     }
 
     class Camera {
         <<abstract>>
         #camera: THREE.Camera
         #target: THREE.Object3D
+        #name: string
         +getThreeCamera(): THREE.Camera
-        +update(deltaTime): void
         +setTarget(target): void
+        +getTarget(): THREE.Object3D
+        +getName(): string
+        +setName(name): void
+        +update(deltaTime): void
     }
 
     class FollowCamera {
         -offset: Vector3
         -damping: number
         -lookAtTarget: boolean
+        -currentPosition: Vector3
+        -targetPosition: Vector3
         +setOffset(offset): void
+        +getOffset(): Vector3
         +setDamping(damping): void
+        +setLookAtTarget(lookAt): void
         +update(deltaTime): void
     }
 
@@ -42,36 +57,71 @@ classDiagram
         -radius: number
         -minRadius: number
         -maxRadius: number
+        -theta: number
+        -phi: number
         -rotationSpeed: number
+        -minPhi: number
+        -maxPhi: number
+        -isDragging: boolean
         +setRadius(radius): void
-        +handleInput(input): void
+        +setRadiusLimits(min, max): void
+        +setRotationSpeed(speed): void
+        +handleInput(event, canvas): void
         +update(deltaTime): void
     }
 
     class FirstPersonCamera {
         -offset: Vector3
         -sensitivity: number
+        -yaw: number
+        -pitch: number
         -minPitch: number
         -maxPitch: number
+        -isDragging: boolean
+        +setOffset(offset): void
+        +getOffset(): Vector3
         +setSensitivity(value): void
-        +handleInput(input): void
+        +setPitchLimits(min, max): void
+        +handleInput(event, canvas): void
         +update(deltaTime): void
     }
 
     class CinematicCamera {
-        -waypoints: Waypoint[]
+        -waypoints: CameraWaypoint[]
         -currentWaypoint: number
-        -transitionSpeed: number
-        +addWaypoint(position, lookAt, duration): void
+        -isPlaying: boolean
+        -elapsed: number
+        -eventCallbacks: Map<string, Function[]>
+        +addWaypoint(waypoint): void
+        +clearWaypoints(): void
         +play(): void
+        +pause(): void
+        +resume(): void
+        +stop(): void
+        +isSequencePlaying(): boolean
+        +on(event, callback): void
+        +off(event, callback): void
         +update(deltaTime): void
     }
 
-    CameraService --> Camera
-    Camera <|-- FollowCamera
-    Camera <|-- OrbitCamera
-    Camera <|-- FirstPersonCamera
-    Camera <|-- CinematicCamera
+    class CameraTransition {
+        -sourceCamera: Camera
+        -targetCamera: Camera
+        -duration: number
+        -elapsed: number
+        -easing: Function
+        -tempPosition: Vector3
+        -tempQuaternion: Quaternion
+        +update(deltaTime): boolean
+        +getTargetCamera(): Camera
+    }
+
+    CameraService --> Camera : manages
+    CameraService --> CameraTransition : uses
+    Camera <|-- FollowCamera : extends
+    Camera <|-- OrbitCamera : extends
+    Camera <|-- FirstPersonCamera : extends
+    Camera <|-- CinematicCamera : extends
 ```
 
 ## Integration with Engine
@@ -90,291 +140,128 @@ graph TD
 
 ## Camera Types
 
+### Camera (Base Class)
+
+The Camera abstract base class serves as the foundation for all camera types in the system. It provides common functionality such as:
+
+- Access to the underlying THREE.js camera
+- Target object management (what the camera follows or looks at)
+- Naming for camera identification
+- Abstract update method that each camera type must implement
+
+Each specialized camera extends this base class to provide custom behaviors while maintaining a consistent interface.
+
 ### FollowCamera
 
-A camera that follows a target object with configurable offset and smoothing.
+The FollowCamera tracks a target object with configurable behavior:
 
-```typescript
-class FollowCamera extends Camera {
-  private offset: Vector3 = new Vector3(0, 5, 10);
-  private damping: number = 5.0;
-  private lookAtTarget: boolean = true;
+- **Offset**: Maintains a relative position to the target (e.g., behind and above)
+- **Damping**: Controls how smoothly the camera follows the target (higher values create smoother movement)
+- **Look-at behavior**: Can be configured to either face the target or maintain its own orientation
+- **Smooth following**: Implements interpolation between current and target positions for fluid movement
 
-  constructor(options?: FollowCameraOptions) {
-    super();
-    // Initialize with options
-  }
-
-  update(deltaTime: number): void {
-    if (this.target) {
-      // Calculate smooth follow position
-      // Apply damping
-      // Handle look-at behavior
-    }
-  }
-}
-```
+This camera is ideal for third-person gameplay, vehicle following, or any scenario where the camera needs to track an object with a fixed offset.
 
 ### OrbitCamera
 
-A camera that orbits around a target with configurable distance and angles.
+The OrbitCamera circles around a target object like a satellite:
 
-```typescript
-class OrbitCamera extends Camera {
-  private radius: number = 10;
-  private minRadius: number = 2;
-  private maxRadius: number = 20;
-  private theta: number = 0;
-  private phi: number = Math.PI / 4;
-  private rotationSpeed: number = 1.0;
+- **Radius control**: Adjustable distance from the target with minimum and maximum limits
+- **Spherical coordinates**: Uses theta (horizontal) and phi (vertical) angles to position the camera
+- **Mouse interaction**: Supports dragging to rotate around the target and scrolling to zoom in/out
+- **Constraint angles**: Prevents the camera from moving to invalid positions (like below the ground)
 
-  update(deltaTime: number): void {
-    // Calculate position based on spherical coordinates
-  }
-
-  handleInput(inputManager: InputManager): void {
-    // Update theta and phi based on mouse movement
-    // Update radius based on scroll wheel
-  }
-}
-```
+This camera is perfect for object inspection, strategy games, or any scenario requiring a view that can be freely rotated around a focal point.
 
 ### FirstPersonCamera
 
-A camera that simulates a first-person perspective, typically attached to a character.
+The FirstPersonCamera simulates viewing the world through a character's eyes:
 
-```typescript
-class FirstPersonCamera extends Camera {
-  private offset: Vector3 = new Vector3(0, 1.7, 0);
-  private yaw: number = 0;
-  private pitch: number = 0;
-  private sensitivity: number = 0.2;
+- **Head offset**: Positions the camera at an appropriate height relative to the target (typically eye level)
+- **Look direction**: Controlled by yaw (horizontal) and pitch (vertical) angles
+- **Mouse sensitivity**: Adjustable response to mouse movement
+- **Pitch limits**: Prevents looking too far up or down (avoiding unnatural angles)
 
-  update(deltaTime: number): void {
-    // Position camera at target + offset
-    // Apply rotation based on yaw and pitch
-  }
-
-  handleInput(inputManager: InputManager): void {
-    // Update yaw and pitch based on mouse movement
-    // Clamp pitch to prevent over-rotation
-  }
-}
-```
+This camera is essential for first-person games, immersive simulations, and virtual walkthroughs.
 
 ### CinematicCamera
 
-A camera designed for scripted sequences with predefined movements.
+The CinematicCamera enables scripted camera movements through predefined paths:
 
-```typescript
-interface CameraWaypoint {
-  position: Vector3;
-  lookAt: Vector3;
-  duration: number;
-  easing: EasingFunction;
-}
+- **Waypoint system**: Defines a series of positions and orientations with specific durations
+- **Easing functions**: Controls acceleration and deceleration between waypoints for natural motion
+- **Playback controls**: Supports play, pause, resume, and stop functionality
+- **Event system**: Emits events at key moments (sequence start/end, waypoint transitions)
 
-class CinematicCamera extends Camera {
-  private waypoints: CameraWaypoint[] = [];
-  private currentWaypoint: number = 0;
-  private elapsed: number = 0;
-
-  addWaypoint(waypoint: CameraWaypoint): void {
-    this.waypoints.push(waypoint);
-  }
-
-  play(): void {
-    this.currentWaypoint = 0;
-    this.elapsed = 0;
-  }
-
-  update(deltaTime: number): void {
-    // Move through waypoints based on elapsed time
-    // Apply easing functions for smooth movement
-  }
-}
-```
-
-## Camera Effects
-
-The system supports various camera effects that can be applied to enhance visual feedback:
-
-```typescript
-interface CameraEffect {
-  apply(camera: THREE.Camera, deltaTime: number): void;
-  isFinished(): boolean;
-}
-
-class ShakeEffect implements CameraEffect {
-  private intensity: number;
-  private duration: number;
-  private elapsed: number = 0;
-  private originalPosition: Vector3 = new Vector3();
-
-  apply(camera: THREE.Camera, deltaTime: number): void {
-    // Apply random offset based on intensity
-    // Decrease intensity over time
-  }
-
-  isFinished(): boolean {
-    return this.elapsed >= this.duration;
-  }
-}
-
-class ZoomEffect implements CameraEffect {
-  private targetFOV: number;
-  private originalFOV: number;
-  private duration: number;
-  private elapsed: number = 0;
-
-  apply(camera: THREE.Camera, deltaTime: number): void {
-    // Gradually change FOV from original to target
-  }
-
-  isFinished(): boolean {
-    return this.elapsed >= this.duration;
-  }
-}
-```
+This camera is ideal for cutscenes, introductions, guided tours, and any pre-planned camera choreography.
 
 ## Camera Transitions
 
-The system supports smooth transitions between different cameras:
+The camera system features smooth transitions between different camera types:
 
-```typescript
-class CameraTransition {
-  private sourceCamera: Camera;
-  private targetCamera: Camera;
-  private duration: number;
-  private elapsed: number = 0;
-  private easing: EasingFunction;
+- **Interpolation**: Gradually moves from source to target camera position and orientation
+- **Configurable duration**: Controls how quickly transitions occur
+- **Easing functions**: Allows for natural acceleration/deceleration during transitions
+- **Event-based**: Triggers events at the start and completion of transitions
 
-  update(deltaTime: number): boolean {
-    // Interpolate between source and target cameras
-    // Return true when complete
-  }
-}
-```
+Transitions create cinematic continuity when switching between different camera modes, avoiding jarring cuts.
 
-## Usage Examples
+## Camera Service
 
-### Basic Setup
+The CameraService serves as the central management system for all cameras:
 
-```typescript
-// Initialize camera service with DI
-@injectable()
-class GameScene extends Scene {
-  @inject(CameraService) private cameraService: CameraService;
-  @inject(InputManager) private inputManager: InputManager;
+- **Camera registry**: Maintains a collection of all available cameras by name
+- **Active camera tracking**: Manages which camera is currently being used for rendering
+- **Camera creation**: Factory methods for easily instantiating different camera types
+- **Transition handling**: Manages smooth transitions between cameras
+- **Event system**: Allows for callbacks on camera changes and transitions
+- **Update propagation**: Ensures all cameras and transitions receive update calls
 
-  onEnter(): void {
-    // Create player
-    const player = this.createGameObject('player');
+The service provides a single point of control for all camera-related functionality and integrates with the broader engine architecture.
 
-    // Create main camera
-    const followCam = new FollowCamera({
-      offset: new Vector3(0, 5, -10),
-      damping: 3.0,
-    });
-    followCam.setTarget(player.getObject3D());
+## Easing Functions
 
-    // Register with service
-    this.cameraService.registerCamera('main', followCam);
-    this.cameraService.setActiveCamera('main');
+The system provides multiple easing functions to create natural motion:
 
-    // Create alternate camera
-    const orbitCam = new OrbitCamera({
-      radius: 15,
-      minRadius: 5,
-      maxRadius: 30,
-    });
-    orbitCam.setTarget(player.getObject3D());
+- **Linear**: Constant rate of change (no easing)
+- **Quadratic**: Accelerating or decelerating motion with squared rate changes
+- **Cubic**: More pronounced acceleration or deceleration with cubed rate changes
+- **In/Out variations**: Control whether easing occurs at the beginning, end, or both
 
-    this.cameraService.registerCamera('orbit', orbitCam);
-  }
+These functions can be applied to both camera transitions and cinematic camera waypoint movements.
 
-  update(deltaTime: number): void {
-    super.update(deltaTime);
+## Usage Scenarios
 
-    // Handle camera switching
-    if (this.inputManager.isKeyPressed('C')) {
-      const current = this.cameraService.getActiveCamera();
-      const next = current.getName() === 'main' ? 'orbit' : 'main';
-      this.cameraService.transitionTo(next, 1.0);
-    }
-  }
-}
-```
+### Basic Camera Setup
 
-### Cinematic Sequence
+A typical game scene would initialize several camera types and configure them for different situations:
 
-```typescript
-createCutscene(): void {
-  const cinematicCam = new CinematicCamera();
+1. Create a follow camera for standard third-person gameplay
+2. Set up an orbit camera for inspection modes or strategic views
+3. Configure the initial active camera
+4. Implement input handling to switch between cameras when needed
 
-  // Add waypoints for camera movement
-  cinematicCam.addWaypoint({
-    position: new Vector3(0, 10, 20),
-    lookAt: new Vector3(0, 0, 0),
-    duration: 3.0,
-    easing: Easing.easeInOutCubic
-  });
+The system makes it easy to maintain multiple camera perspectives and switch between them as gameplay requires.
 
-  cinematicCam.addWaypoint({
-    position: new Vector3(15, 5, 10),
-    lookAt: new Vector3(0, 0, 0),
-    duration: 2.5,
-    easing: Easing.easeInOutQuad
-  });
+### Cinematic Sequences
 
-  // Register and play
-  this.cameraService.registerCamera("cinematic", cinematicCam);
-  this.cameraService.setActiveCamera("cinematic");
-  cinematicCam.play();
+Creating cutscenes or guided sequences is straightforward:
 
-  // Listen for completion
-  this.eventBus.once("camera.sequence.complete", () => {
-    this.cameraService.setActiveCamera("main");
-  });
-}
-```
+1. Create a cinematic camera instance
+2. Define waypoints with positions, look-at points, durations, and easing
+3. Activate the camera and start playback
+4. Listen for sequence completion to transition back to gameplay
 
-## Integration with Rendering Pipeline
+This approach allows for complex camera choreography without writing custom animation code.
 
-The camera system integrates with the rendering pipeline to support effects like:
+## Future Improvements
 
-- Depth of Field
-- Motion Blur
-- Chromatic Aberration
-- Post-processing effects
-
-```typescript
-class CameraPostProcessing {
-  private composer: EffectComposer;
-  private effects: Effect[] = [];
-
-  addEffect(effect: Effect): void {
-    this.effects.push(effect);
-    this.rebuildPipeline();
-  }
-
-  removeEffect(effectType: string): void {
-    // Remove effect from pipeline
-  }
-
-  rebuildPipeline(): void {
-    // Setup effect composer with all current effects
-  }
-}
-```
-
-## Future Extensions
-
-1. **Collision Prevention** - Stop cameras from clipping through environment geometry
-2. **Camera Rails** - Define paths that cameras can move along
-3. **Multi-Camera Rendering** - Support for picture-in-picture or split-screen
-4. **Level-of-Detail Integration** - Change LOD based on camera distance
-5. **VR/AR Support** - Extend camera system for immersive technologies
+1. **Camera Collision Prevention** - Prevent clipping through level geometry
+2. **Path-Constrained Cameras** - Allow cameras to move along predetermined paths
+3. **Target Groups** - Allow cameras to target multiple objects and intelligently frame them
+4. **Post-Processing Integration** - Support for depth of field, motion blur, and other effects
+5. **Camera Shake and Effects** - Built-in support for impact feedback and visual effects
+6. **VR/AR Camera Support** - Extend the system for immersive technologies
 
 ## Implementation Timeline
 

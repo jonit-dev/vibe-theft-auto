@@ -366,6 +366,21 @@ export class CameraDemoScene extends Scene {
   }
 
   private setupInputHandling(): void {
+    // Add pointer lock change listeners
+    document.addEventListener('pointerlockchange', () => {
+      if (document.pointerLockElement === this.canvas) {
+        console.log('Pointer is locked to the canvas');
+        // Set up pointer lock movement handler
+        document.addEventListener('mousemove', this.handlePointerLockMove);
+        this.canvas.style.cursor = 'none';
+      } else {
+        console.log('Pointer lock released');
+        // Remove pointer lock movement handler
+        document.removeEventListener('mousemove', this.handlePointerLockMove);
+        this.canvas.style.cursor = 'auto';
+      }
+    });
+
     // Set up keyboard controls for camera switching
     document.addEventListener('keydown', (event) => {
       console.log(`Camera demo key pressed: ${event.code}`);
@@ -375,6 +390,8 @@ export class CameraDemoScene extends Scene {
         this.cameraService.transitionTo('orbit', 1.0);
       } else if (event.code === 'Digit3') {
         this.cameraService.transitionTo('firstPerson', 1.0);
+        // Request pointer lock when switching to first person camera
+        this.canvas.requestPointerLock();
       } else if (event.code === 'Escape') {
         // Add a way to go back to the main scene
         this.eventBus.emit('scene:switch', 'main');
@@ -387,8 +404,30 @@ export class CameraDemoScene extends Scene {
     this.canvas.addEventListener('mouseup', this.mouseUpHandler);
     this.canvas.addEventListener('wheel', this.wheelHandler);
 
+    // Double click to toggle pointer lock for first person camera
+    this.canvas.addEventListener('dblclick', () => {
+      const activeCamera = this.cameraService.getActiveCamera();
+      if (activeCamera?.getName() === 'firstPerson') {
+        if (document.pointerLockElement !== this.canvas) {
+          this.canvas.requestPointerLock();
+        } else {
+          document.exitPointerLock();
+        }
+      }
+    });
+
     console.log('Input handlers set up');
   }
+
+  // Handler for pointer lock mouse movement
+  private handlePointerLockMove = (event: MouseEvent): void => {
+    const activeCamera = this.cameraService.getActiveCamera();
+    if (activeCamera?.getName() === 'firstPerson') {
+      if (activeCamera instanceof FirstPersonCamera) {
+        activeCamera.handlePointerLockMovement(event);
+      }
+    }
+  };
 
   private handleMouseEvent(event: MouseEvent | WheelEvent): void {
     const activeCamera = this.cameraService.getActiveCamera();

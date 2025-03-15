@@ -32,7 +32,7 @@ export class FirstPersonCamera extends Camera {
 
     // Initialize with default options
     this.offset = options.offset || new THREE.Vector3(0, 1.7, 0);
-    this.sensitivity = options.sensitivity || 0.2;
+    this.sensitivity = options.sensitivity || 1.5;
     this.minPitch = options.minPitch || -Math.PI / 2 + 0.1; // Slightly above looking straight down
     this.maxPitch = options.maxPitch || Math.PI / 2 - 0.1; // Slightly below looking straight up
 
@@ -129,15 +129,23 @@ export class FirstPersonCamera extends Camera {
    * @param event - The pointer move event
    */
   public handlePointerLockMovement(event: MouseEvent): void {
+    // Get movement deltas from the event
+    const movementX = event.movementX || 0;
+    const movementY = event.movementY || 0;
+
+    // Apply sensitivity scale factor for smoother control
+    // Using a larger scale factor for more responsive movement
+    const sensitivityScale = 0.005;
+
     // Update yaw (horizontal rotation)
-    this.yaw -= event.movementX * this.sensitivity * 0.01;
+    this.yaw -= movementX * this.sensitivity * sensitivityScale;
 
     // Update pitch (vertical rotation) with clamping
     this.pitch = Math.max(
       this.minPitch,
       Math.min(
         this.maxPitch,
-        this.pitch - event.movementY * this.sensitivity * 0.01
+        this.pitch - movementY * this.sensitivity * sensitivityScale
       )
     );
   }

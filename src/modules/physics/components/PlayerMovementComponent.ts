@@ -39,6 +39,10 @@ export class PlayerMovementComponent extends Component {
 
     if (!this.camera) return;
 
+    // Get active camera type
+    const activeCamera = this.cameraService.getActiveCamera();
+    const isFirstPerson = activeCamera?.getName() === 'firstPerson';
+
     // Apply gravity
     if (!this.isGrounded) {
       this.velocity.y -= this.gravity * deltaTime;
@@ -51,13 +55,13 @@ export class PlayerMovementComponent extends Component {
 
     // Handle movement
     const moveDirection = this.calculateMoveDirection();
-
-    // Apply movement
     const object3D = this.gameObject.getObject3D();
 
-    // Apply velocity
+    // Apply horizontal movement
     object3D.position.x += moveDirection.x * this.moveSpeed * deltaTime;
     object3D.position.z += moveDirection.z * this.moveSpeed * deltaTime;
+
+    // Apply vertical velocity (gravity/jumping)
     object3D.position.y += this.velocity.y * deltaTime;
 
     // Ground check (simple implementation)
@@ -81,10 +85,17 @@ export class PlayerMovementComponent extends Component {
       this.jumpCooldown = 0.3; // Prevent jump spam
     }
 
-    // Rotate player to face movement direction
-    if (moveDirection.x !== 0 || moveDirection.z !== 0) {
+    // Rotate player to face movement direction (only in third-person modes)
+    if (!isFirstPerson && (moveDirection.x !== 0 || moveDirection.z !== 0)) {
       const angle = Math.atan2(moveDirection.x, moveDirection.z);
-      object3D.rotation.y = angle;
+      // Smooth rotation
+      const currentRotation = object3D.rotation.y;
+      const targetRotation = angle;
+
+      // Use simple lerp for smoother rotation
+      const rotationSpeed = 10 * deltaTime;
+      object3D.rotation.y =
+        currentRotation + (targetRotation - currentRotation) * rotationSpeed;
     }
   }
 
@@ -96,45 +107,75 @@ export class PlayerMovementComponent extends Component {
     // Get camera direction vectors
     const cameraDirection = new THREE.Vector3();
     this.camera.getWorldDirection(cameraDirection);
-    cameraDirection.y = 0; // Keep movement on horizontal plane
+
+    // Get the active camera from the service
+    const activeCamera = this.cameraService.getActiveCamera();
+    const isFirstPerson = activeCamera?.getName() === 'firstPerson';
+
+    // For first-person, we want to move exactly where we're looking
+    // For other cameras, we keep movement on the horizontal plane
+    if (!isFirstPerson) {
+      cameraDirection.y = 0; // Keep movement on horizontal plane for third-person views
+    }
+
     cameraDirection.normalize();
 
-    // Calculate right vector
+    // Calculate right vector - always perpendicular to world up vector
     const right = new THREE.Vector3();
     right.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
+    right.normalize();
 
     // Add movement based on key input - check multiple key formats
     if (
       this.inputManager.isKeyPressed('KeyW') ||
       this.inputManager.isKeyPressed('w') ||
-      this.inputManager.isKeyPressed('W')
+      this.inputManager.isKeyPressed('W') ||
+      this.inputManager.isKeyPressed('ArrowUp')
     ) {
+      // In first person, move exactly where camera is facing (including Y component)
+      // In other modes, move on the XZ plane
       direction.add(cameraDirection);
     }
     if (
       this.inputManager.isKeyPressed('KeyS') ||
       this.inputManager.isKeyPressed('s') ||
-      this.inputManager.isKeyPressed('S')
+      this.inputManager.isKeyPressed('S') ||
+      this.inputManager.isKeyPressed('ArrowDown')
     ) {
       direction.sub(cameraDirection);
     }
     if (
       this.inputManager.isKeyPressed('KeyA') ||
       this.inputManager.isKeyPressed('a') ||
-      this.inputManager.isKeyPressed('A')
+      this.inputManager.isKeyPressed('A') ||
+      this.inputManager.isKeyPressed('ArrowLeft')
     ) {
       direction.sub(right);
     }
     if (
       this.inputManager.isKeyPressed('KeyD') ||
       this.inputManager.isKeyPressed('d') ||
-      this.inputManager.isKeyPressed('D')
+      this.inputManager.isKeyPressed('D') ||
+      this.inputManager.isKeyPressed('ArrowRight')
     ) {
       direction.add(right);
     }
 
     if (direction.length() > 0) {
       direction.normalize();
+
+      // Special handling for first-person mode
+      if (isFirstPerson) {
+        // For first-person, we might need to adjust the vertical component
+        // to prevent unintended vertical movement
+        if (!this.isGrounded) {
+          // If in the air, don't move vertically based on look direction
+          direction.y = 0;
+          if (direction.length() > 0) {
+            direction.normalize();
+          }
+        }
+      }
     }
 
     return direction;
