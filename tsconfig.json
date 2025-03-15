@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -11,12 +11,24 @@
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["src/*"],
+      "@ui-components/*": ["src/ui/components/*"],
+      "@game-components/*": ["src/components/*"],
+      "@pages/*": ["src/ui/pages/*"],
+      "@services/*": ["src/services/*"],
+      "@core/*": ["src/core/*"],
+      "@utils/*": ["src/utils/*"],
+      "@scenes/*": ["src/scenes/*"],
+      "@ui/*": ["src/ui/*"]
     },
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

@@ -4,9 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "webpack serve --open",
-    "build": "webpack --mode=production",
-    "dev": "webpack serve"
+    "start": "vite",
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
@@ -23,8 +24,10 @@
   },
   "devDependencies": {
     "@types/three": "^0.174.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.2",
+    "vite": "^6.2.2",
     "webpack": "^5.98.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.0"
