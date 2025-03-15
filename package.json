@@ -2,6 +2,7 @@
   "name": "vibe-theft-auto",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "license": "MIT",
   "scripts": {
     "start": "vite",
@@ -23,8 +24,13 @@
     "tsyringe": "^4.8.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.14",
+    "@tailwindcss/vite": "^4.0.14",
     "@types/three": "^0.174.0",
     "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.0.14",
     "ts-loader": "^9.5.2",
     "typescript": "^5.8.2",
     "vite": "^6.2.2",

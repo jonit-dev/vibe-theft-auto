@@ -55,96 +55,109 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen w-full flex items-center justify-center bg-cyberpunk'>
-      <div className='cyber-border p-1 w-full max-w-lg'>
-        <div className='bg-game-dark p-8 rounded-md'>
-          <h2 className='text-3xl font-bold text-center mb-8 text-white text-glow'>
-            Create Your Account
-          </h2>
+    <div className='min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-red-800'>
+      <div className='bg-white/10 backdrop-blur-sm p-8 rounded-xl shadow-2xl w-full max-w-lg border border-white/20'>
+        <h2 className='text-3xl font-bold text-center mb-8 text-white'>
+          Create Your Account
+        </h2>
 
-          {error && (
-            <div className='bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6'>
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className='space-y-5'>
-            <div>
-              <label htmlFor='username' className='label-dark'>
-                Username
-              </label>
-              <input
-                type='text'
-                id='username'
-                name='username'
-                value={formData.username}
-                onChange={handleChange}
-                placeholder='Enter username'
-                className='form-control-dark'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='email' className='label-dark'>
-                Email
-              </label>
-              <input
-                type='email'
-                id='email'
-                name='email'
-                value={formData.email}
-                onChange={handleChange}
-                placeholder='Enter email'
-                className='form-control-dark'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='password' className='label-dark'>
-                Password
-              </label>
-              <input
-                type='password'
-                id='password'
-                name='password'
-                value={formData.password}
-                onChange={handleChange}
-                placeholder='Enter password'
-                className='form-control-dark'
-              />
-            </div>
-
-            <div>
-              <label htmlFor='confirmPassword' className='label-dark'>
-                Confirm Password
-              </label>
-              <input
-                type='password'
-                id='confirmPassword'
-                name='confirmPassword'
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder='Confirm password'
-                className='form-control-dark'
-              />
-            </div>
-
-            <button type='submit' className='btn-neon w-full py-3 text-lg mt-4'>
-              REGISTER
-            </button>
-          </form>
-
-          <div className='mt-6 text-center'>
-            <p className='text-gray-400'>
-              Already have an account?{' '}
-              <Link
-                to='/'
-                className='text-game-primary hover:text-game-primary hover:underline transition-colors'
-              >
-                Log In
-              </Link>
-            </p>
+        {error && (
+          <div className='bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-6'>
+            {error}
           </div>
+        )}
+
+        <form onSubmit={handleSubmit} className='space-y-5'>
+          <div>
+            <label
+              htmlFor='username'
+              className='block text-white mb-2 font-medium'
+            >
+              Username
+            </label>
+            <input
+              type='text'
+              id='username'
+              name='username'
+              value={formData.username}
+              onChange={handleChange}
+              placeholder='Enter username'
+              className='w-full px-4 py-3 rounded-lg bg-black/30 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor='email'
+              className='block text-white mb-2 font-medium'
+            >
+              Email
+            </label>
+            <input
+              type='email'
+              id='email'
+              name='email'
+              value={formData.email}
+              onChange={handleChange}
+              placeholder='Enter email'
+              className='w-full px-4 py-3 rounded-lg bg-black/30 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor='password'
+              className='block text-white mb-2 font-medium'
+            >
+              Password
+            </label>
+            <input
+              type='password'
+              id='password'
+              name='password'
+              value={formData.password}
+              onChange={handleChange}
+              placeholder='Enter password'
+              className='w-full px-4 py-3 rounded-lg bg-black/30 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor='confirmPassword'
+              className='block text-white mb-2 font-medium'
+            >
+              Confirm Password
+            </label>
+            <input
+              type='password'
+              id='confirmPassword'
+              name='confirmPassword'
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder='Confirm password'
+              className='w-full px-4 py-3 rounded-lg bg-black/30 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            />
+          </div>
+
+          <button
+            type='submit'
+            className='w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg hover:shadow-blue-500/50 transition duration-300 ease-in-out transform hover:-translate-y-1 mt-4'
+          >
+            REGISTER
+          </button>
+        </form>
+
+        <div className='mt-6 text-center'>
+          <p className='text-gray-400'>
+            Already have an account?{' '}
+            <Link
+              to='/'
+              className='text-blue-400 hover:text-blue-300 hover:underline transition-colors'
+            >
+              Log In
+            </Link>
+          </p>
         </div>
       </div>
     </div>
