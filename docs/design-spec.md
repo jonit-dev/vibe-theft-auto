@@ -4,62 +4,64 @@
 
 ### 1.1 Concept
 
-A dark sci-fi aesthetic with cyberpunk influences. The game world should feel technologically advanced but dystopian, with high contrast between neon elements and shadowy environments.
+A vibrant retro 80s Miami aesthetic inspired by GTA Vice City. The game world should feel nostalgic and energetic, with neon signs, palm trees, and sunset gradients creating a distinctive atmosphere that evokes the glamour and excess of 1980s Miami.
 
 ### 1.2 Key Visual References
 
-- Blade Runner 2049
-- Cyberpunk 2077
-- Deus Ex series
-- Ghost in the Shell
-- TRON: Legacy
+- GTA Vice City
+- Miami Vice TV series
+- Hotline Miami
+- Scarface
+- Retrowave/synthwave aesthetics
 
 ## 2. Color Palette
 
 ### 2.1 Primary Colors
 
-- Deep Space Black: `#0A0E17` - Primary background color
-- Midnight Blue: `#141E33` - Secondary background color
-- Tech Blue: `#0A84FF` - Primary accent color
+- Miami Black: `#0A0C14` - Primary background color
+- Midnight Purple: `#1A0933` - Secondary background color
+- Neon Pink: `#FF41A6` - Primary accent color
 
 ### 2.2 Secondary Colors
 
-- Neon Purple: `#B73EFF` - Secondary accent color
-- Cyber Green: `#00FF9D` - Tertiary accent color
+- Vice Blue: `#00A5E5` - Secondary accent color
+- Palm Green: `#00E574` - Tertiary accent color
+- Sunset Orange: `#FF8E42` - Highlight color
 
 ### 2.3 UI Colors
 
-- Interface Dark: `#1C2333` - UI background color
-- Interface Light: `#2C3445` - UI secondary background
-- Text White: `#E8ECEF` - Primary text color
-- Subdued Text: `#8A93A7` - Secondary text color
-- Alert Red: `#FF3B5F` - Warning/danger color
-- Success Green: `#00C875` - Success/confirm color
+- Interface Dark: `#1A1133` - UI background color
+- Interface Light: `#2A2044` - UI secondary background
+- Text White: `#EFF6FF` - Primary text color
+- Subdued Text: `#9D98B3` - Secondary text color
+- Alert Red: `#FF3062` - Warning/danger color
+- Success Green: `#3DFC9E` - Success/confirm color
 
 ### 2.4 Gradient Combinations
 
-- Tech Gradient: `linear-gradient(135deg, #0A84FF 0%, #B73EFF 100%)` - Used for important UI elements
-- Dark Gradient: `linear-gradient(180deg, #0A0E17 0%, #141E33 100%)` - Used for panels and backgrounds
+- Miami Sunset: `linear-gradient(135deg, #FF41A6 0%, #FF8E42 100%)` - Used for important UI elements
+- Ocean Drive: `linear-gradient(180deg, #0A0C14 0%, #1A0933 100%)` - Used for panels and backgrounds
+- Neon Glow: `linear-gradient(135deg, #00A5E5 0%, #00E574 100%)` - Used for interactive elements
 
 ## 3. Typography
 
 ### 3.1 Primary Font
 
-- **Font Family**: "Rajdhani" - A geometric sans-serif with a technical, futuristic feel
-- **Weights**: 300 (Light), 500 (Medium), 700 (Bold)
+- **Font Family**: "Outrun Future" - A retro-futuristic font that captures the 80s arcade and neon aesthetic
+- **Weights**: 400 (Regular), 700 (Bold)
 - **Usage**: Main UI text, headings, buttons
 
 ### 3.2 Secondary Font
 
-- **Font Family**: "Roboto Mono" - A monospaced font for technical displays
-- **Weights**: 400 (Regular), 700 (Bold)
+- **Font Family**: "VCR OSD Mono" - A monospaced font reminiscent of 80s computer displays
+- **Weights**: 400 (Regular)
 - **Usage**: Code displays, terminal interfaces, numerical data
 
 ### 3.3 Text Sizes
 
-- Heading 1: 32px / 700 weight
-- Heading 2: 24px / 700 weight
-- Heading 3: 18px / 500 weight
+- Heading 1: 36px / 700 weight
+- Heading 2: 28px / 700 weight
+- Heading 3: 20px / 400 weight
 - Body: 16px / 400 weight
 - Small: 14px / 400 weight
 - Micro: 12px / 400 weight
@@ -68,30 +70,30 @@ A dark sci-fi aesthetic with cyberpunk influences. The game world should feel te
 
 ### 4.1 Buttons
 
-- **Primary Button**: Pill-shaped with tech gradient background, 2px glow effect in accent color
-- **Secondary Button**: Outlined with 1px stroke in accent color, transparent background
-- **Tertiary Button**: Text-only with accent color, hover underline effect
+- **Primary Button**: Pill-shaped with miami sunset gradient background, 2px neon glow effect in accent color
+- **Secondary Button**: Outlined with 1px stroke in neon color, transparent background
+- **Tertiary Button**: Text-only with neon accent color, hover underline effect
 
 ### 4.2 Panels and Windows
 
 - Rounded corners (8px radius)
 - 75-85% opacity dark backgrounds
-- Thin 1px borders in accent colors
-- Subtle outer glow in accent color (2-3px)
+- Thin 1px neon borders in accent colors
+- Vibrant outer glow in accent color (2-3px)
 - Drop shadows for depth (rgba(0,0,0,0.5), 5-10px blur)
 
 ### 4.3 HUD Elements
 
-- Minimalist design with thin lines
-- Important information highlighted with accent colors
+- Minimalist design with neon outlines
+- Important information highlighted with vibrant colors
 - Non-critical information in subdued colors
-- Dynamic elements should have subtle animations
-- Holographic-style elements with transparency
+- Dynamic elements should have subtle pulsing animations
+- Retro-style chrome elements with transparency
 
 ### 4.4 Icons
 
-- Thin stroke (1-2px) geometric designs
-- Consistent accent colors
+- Thin stroke (1-2px) geometric designs with neon glow
+- Vibrant accent colors
 - Glow effects on hover/active states
 - Minimal detail for clear legibility at small sizes
 
@@ -99,52 +101,52 @@ A dark sci-fi aesthetic with cyberpunk influences. The game world should feel te
 
 ### 5.1 UI Transitions
 
-- Subtle fade-in/out (150-200ms)
-- Soft slide animations for panels (200-250ms)
+- Neon flicker effect for startup/initialization (150-200ms)
+- Smooth horizontal scan lines (subtle, 30% opacity)
 - Easing: cubic-bezier(0.25, 0.1, 0.25, 1)
 
 ### 5.2 Highlight Effects
 
-- Pulsing glow for important elements
-- Scanlines effect for technical interfaces (subtle, 30% opacity)
-- Digital distortion for damaged/glitching elements
+- Pulsing neon glow for important elements
+- VHS/CRT scan line effect for retro interfaces
+- Color fringing for damaged/glitching elements
 
 ### 5.3 Particle Effects
 
-- Holographic particles (blue/cyan)
-- Energy trails (accent colors)
-- Digital dust/noise for atmosphere
+- Neon trails (pink/blue)
+- Palm leaf silhouettes
+- Retro grid patterns for ground/horizon
 
 ## 6. Loading and Transition Screens
 
 ### 6.1 Loading Screens
 
-- Animated technical diagrams or wireframes
-- Progress indicator using accent colors
-- Minimal lore text or hints in Rajdhani font
-- Background with subtle animated patterns
+- Animated palm tree silhouettes against sunset gradient
+- Cassette tape or vinyl record loading spinner
+- Retro typography with game hints or lore
+- Background with subtle animated grid patterns
 
 ### 6.2 Game Transitions
 
-- Quick fade to black (150ms)
-- Digital glitch effect for sudden transitions
-- Slow-motion effect for dramatic moments
+- VHS tracking effect for scene transitions (150ms)
+- Glitch effect for sudden transitions
+- Slow-motion 80s action movie style for dramatic moments
 
 ## 7. Environmental Design
 
 ### 7.1 Lighting
 
 - High contrast between dark environments and neon light sources
-- Accent colors used for key lighting elements
-- Volumetric fog in shadowy areas
-- Reflective surfaces to enhance lighting effects
+- Sunset color palette for sky and reflections
+- Volumetric fog with pink/blue tint
+- Reflective surfaces to enhance neon lighting effects
 
 ### 7.2 Architecture
 
-- Brutalist structures with futuristic elements
-- Decaying infrastructure contrasted with high-tech installations
+- Art Deco Miami buildings with neon outlines
+- Palm trees silhouetted against sunset backgrounds
 - Neon signage using accent colors
-- Holographic advertisements and interfaces
+- Retro cars and environment props
 
 ## 8. Implementation Guidelines
 

@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Form,
+  FormActions,
+  FormLabel,
+  FormRow,
+  Heading,
+  Input,
+  Panel,
+  Text,
+} from '../components';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -19,68 +30,77 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className='min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-900 via-purple-900 to-red-800'>
-      <div className='bg-white/10 backdrop-blur-sm p-8 rounded-xl shadow-2xl w-full max-w-md border border-white/20'>
-        <h1 className='text-4xl font-bold text-center mb-8 text-white'>
-          Vibe Theft Auto
-        </h1>
+    <div className='min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-[#0A0C14] to-[#1A0933]'>
+      <div className='absolute inset-0 overflow-hidden' aria-hidden='true'>
+        <div className='grid-background opacity-30 w-full h-full'></div>
+      </div>
 
-        <form onSubmit={handleLogin} className='space-y-6'>
-          <div>
-            <label className='block text-white mb-2 font-medium'>
-              Username
-            </label>
-            <input
+      <Panel
+        variant='translucent'
+        glowColor='pink'
+        bordered
+        className='p-8 w-full max-w-md z-10'
+        withScanlines
+      >
+        <Heading level={1} color='text-[#FF41A6]' className='text-center mb-8'>
+          Vibe Theft Auto
+        </Heading>
+
+        <Form onSubmit={handleLogin}>
+          <FormRow>
+            <FormLabel htmlFor='username'>Username</FormLabel>
+            <Input
+              id='username'
               type='text'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className='w-full px-4 py-3 rounded-lg bg-black/30 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               placeholder='Enter your username'
+              fullWidth
             />
-          </div>
+          </FormRow>
 
-          <div>
-            <label className='block text-white mb-2 font-medium'>
-              Password
-            </label>
-            <input
+          <FormRow>
+            <FormLabel htmlFor='password'>Password</FormLabel>
+            <Input
+              id='password'
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='w-full px-4 py-3 rounded-lg bg-black/30 border border-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
               placeholder='Enter your password'
+              fullWidth
             />
-            <div className='flex justify-end mt-1'>
+            <div className='flex justify-end'>
               <Link
                 to='/forgot-password'
-                className='text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors'
+                className='text-sm text-[#00A5E5] hover:text-[#FF41A6] hover:underline transition-colors'
               >
                 Forgot Password?
               </Link>
             </div>
-          </div>
+          </FormRow>
 
-          <button
-            type='submit'
-            className='w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg hover:shadow-blue-500/50 transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105'
-          >
-            LOGIN
-          </button>
-        </form>
+          <FormActions className='mt-8 flex-col items-stretch'>
+            <Button type='submit' fullWidth size='lg'>
+              LOGIN
+            </Button>
+          </FormActions>
+        </Form>
 
         <div className='mt-8 text-center'>
-          <p className='text-gray-400 mb-4'>Demo account: guest / password</p>
-          <p className='text-gray-400'>
+          <Text size='sm' color='text-[#9D98B3]' className='mb-4'>
+            Demo account: guest / password
+          </Text>
+          <Text size='sm' color='text-[#9D98B3]'>
             Don't have an account?{' '}
             <Link
               to='/register'
-              className='text-blue-400 hover:text-blue-300 hover:underline transition-colors'
+              className='text-[#00A5E5] hover:text-[#FF41A6] hover:underline transition-colors'
             >
               Register
             </Link>
-          </p>
+          </Text>
         </div>
-      </div>
+      </Panel>
     </div>
   );
 };
