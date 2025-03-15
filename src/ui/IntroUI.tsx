@@ -76,6 +76,15 @@ export const IntroUI: React.FC<IntroUIProps> = ({ onSceneSelect }) => {
       >
         Resource Management Demo
       </button>
+
+      <button
+        style={buttonStyle('entity-demo')}
+        onClick={() => onSceneSelect('entity-demo')}
+        onMouseEnter={() => setHoverButton('entity-demo')}
+        onMouseLeave={() => setHoverButton(null)}
+      >
+        Entity Builder Demo
+      </button>
     </div>
   );
 };

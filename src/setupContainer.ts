@@ -3,6 +3,7 @@ import { Application } from './Application';
 import { ReactContainer } from './components/ReactContainer';
 import { Engine } from './core/Engine';
 import { SceneManager } from './core/SceneManager';
+import { EntityDemoScene } from './scenes/EntityDemoScene';
 import { EventDemoScene } from './scenes/EventDemoScene';
 import { IntroScene } from './scenes/IntroScene';
 import { MainScene } from './scenes/MainScene';
@@ -10,6 +11,7 @@ import { ResourceDemoScene } from './scenes/ResourceDemoScene';
 import { EventBus } from './services/EventBus';
 import { RenderService } from './services/RenderService';
 import { UIService } from './services/UIService';
+import { EntityBuilder } from './utils/EntityBuilder';
 import { InputManager } from './utils/InputManager';
 // Import resource management components
 import { IResourceLoader } from './core/interfaces/IResourceLoader';
@@ -36,6 +38,7 @@ export function setupContainer() {
   // Register resource management services
   container.registerSingleton(ResourceCache);
   container.registerSingleton(ResourceManager);
+  container.registerSingleton(EntityBuilder);
 
   // Register resource loaders
   container.registerSingleton(TextureLoader);
@@ -56,6 +59,7 @@ export function setupContainer() {
   container.registerSingleton(IntroScene);
   container.registerSingleton(EventDemoScene);
   container.registerSingleton(ResourceDemoScene);
+  container.registerSingleton(EntityDemoScene);
 
   // Register the application
   container.registerSingleton(Application);

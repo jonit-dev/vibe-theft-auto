@@ -1,5 +1,6 @@
 import { Engine } from '@/core/Engine';
 import { SceneManager } from '@/core/SceneManager';
+import { EntityDemoScene } from '@/scenes/EntityDemoScene';
 import { EventDemoScene } from '@/scenes/EventDemoScene';
 import { IntroScene } from '@/scenes/IntroScene';
 import { MainScene } from '@/scenes/MainScene';
@@ -19,7 +20,8 @@ export class Application {
     private mainScene: MainScene,
     private introScene: IntroScene,
     private eventDemoScene: EventDemoScene,
-    private resourceDemoScene: ResourceDemoScene
+    private resourceDemoScene: ResourceDemoScene,
+    private entityDemoScene: EntityDemoScene
   ) {
     this.initialize();
   }
@@ -33,6 +35,7 @@ export class Application {
     this.sceneManager.registerScene('intro', this.introScene);
     this.sceneManager.registerScene('eventDemo', this.eventDemoScene);
     this.sceneManager.registerScene('resource-demo', this.resourceDemoScene);
+    this.sceneManager.registerScene('entity-demo', this.entityDemoScene);
 
     // Start with the intro scene
     this.sceneManager.switchScene('intro');
