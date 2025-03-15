@@ -1,6 +1,7 @@
 import 'reflect-metadata'; // Required for TSyringe - MUST BE THE FIRST ONE
 
 import { Application } from '@/Application';
+import { ReactContainer } from '@/components/ReactContainer';
 import { Engine } from '@/core/Engine';
 import { SceneManager } from '@/core/SceneManager';
 import { EventDemoScene } from '@/scenes/EventDemoScene';
@@ -18,6 +19,7 @@ container.registerSingleton(SceneManager);
 container.registerSingleton(RenderService);
 container.registerSingleton(InputManager);
 container.registerSingleton(EventBus);
+container.registerSingleton(ReactContainer);
 
 // Register all scenes
 container.registerSingleton(MainScene);
