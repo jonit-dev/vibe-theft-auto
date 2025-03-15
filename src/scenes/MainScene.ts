@@ -1,16 +1,39 @@
 import { Scene } from '@/core/Scene';
+import { SceneManager } from '@/core/SceneManager';
 import { CubeController } from '@/core/components/CubeController';
 import { Rotator } from '@/core/components/Rotator';
-import { Transform } from '@/core/components/Transform';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
 
 @injectable()
 @singleton()
 export class MainScene extends Scene {
-  constructor() {
+  private sceneManager: SceneManager;
+  private raycaster = new THREE.Raycaster();
+  private mouse = new THREE.Vector2();
+  private backButton: THREE.Mesh | null = null;
+
+  constructor(sceneManager: SceneManager) {
     super();
+    this.sceneManager = sceneManager;
+  }
+
+  public onEnter(): void {
+    console.log('Entered main scene');
+
+    // Setup the scene
     this.setupScene();
+
+    // Create back button
+    this.createBackButton();
+
+    // Setup event listener for mouse clicks
+    document.addEventListener('click', this.onMouseClick.bind(this));
+  }
+
+  public onExit(): void {
+    // Clean up
+    document.removeEventListener('click', this.onMouseClick.bind(this));
   }
 
   private setupScene(): void {
@@ -41,25 +64,28 @@ export class MainScene extends Scene {
     z: number,
     color: number
   ): void {
-    // Create a new game object
+    // Create a game object
     const cubeObject = this.createGameObject(id);
 
-    // Get the Three.js Object3D
-    const object3D = cubeObject.getObject3D();
-
-    // Create a mesh and add it to the object
+    // Create a THREE.js mesh
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ color });
+    const material = new THREE.MeshStandardMaterial({ color });
     const mesh = new THREE.Mesh(geometry, material);
-    object3D.add(mesh);
 
-    // Add a transform component
-    const transform = cubeObject.addComponent(Transform);
-    transform.setPosition(x, y, z);
+    // Add the mesh to the object3D
+    cubeObject.getObject3D().add(mesh);
 
-    // Add a rotator component to make the cube rotate
-    const rotator = cubeObject.addComponent(Rotator);
-    rotator.setRotationSpeed(0, 1, 0); // Rotate around Y axis
+    // Set position
+    cubeObject.getObject3D().position.set(x, y, z);
+
+    // Add rotator component
+    cubeObject
+      .addComponent(Rotator)
+      .setRotationSpeed(
+        Math.random() * 0.01,
+        Math.random() * 0.01,
+        Math.random() * 0.01
+      );
   }
 
   private createControllableCube(
@@ -69,59 +95,103 @@ export class MainScene extends Scene {
     z: number,
     color: number
   ): void {
-    // Create a new game object
-    const cubeObject = this.createGameObject(id);
+    // Create a game object
+    const playerCube = this.createGameObject(id);
 
-    // Get the Three.js Object3D
-    const object3D = cubeObject.getObject3D();
-
-    // Create a mesh and add it to the object
+    // Create a THREE.js mesh
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshPhongMaterial({ color });
+    const material = new THREE.MeshStandardMaterial({ color });
     const mesh = new THREE.Mesh(geometry, material);
-    object3D.add(mesh);
 
-    // Add a transform component
-    const transform = cubeObject.addComponent(Transform);
-    transform.setPosition(x, y, z);
+    // Add the mesh to the object3D
+    playerCube.getObject3D().add(mesh);
 
-    // Add a rotator component (initially disabled)
-    const rotator = cubeObject.addComponent(Rotator);
-    rotator.setRotationSpeed(0, 2, 0);
-    rotator.setEnabled(false);
+    // Set position
+    playerCube.getObject3D().position.set(x, y, z);
 
-    // Add a controller component
-    cubeObject.addComponent(CubeController);
+    // Add controller component
+    playerCube.addComponent(CubeController);
   }
 
   private addInstructions(): void {
-    const instructions = document.createElement('div');
-    instructions.style.position = 'absolute';
-    instructions.style.top = '10px';
-    instructions.style.left = '10px';
-    instructions.style.color = 'white';
-    instructions.style.fontFamily = 'Arial, sans-serif';
-    instructions.style.fontSize = '14px';
-    instructions.style.padding = '10px';
-    instructions.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    instructions.style.borderRadius = '5px';
-
-    instructions.innerHTML = `
-      <h3>Controls:</h3>
-      <p>Arrow Keys: Move the player cube</p>
-      <p>Spacebar: Toggle rotation</p>
+    const instructionsDiv = document.createElement('div');
+    instructionsDiv.style.position = 'absolute';
+    instructionsDiv.style.bottom = '20px';
+    instructionsDiv.style.left = '20px';
+    instructionsDiv.style.color = 'white';
+    instructionsDiv.style.fontFamily = 'Arial, sans-serif';
+    instructionsDiv.style.padding = '10px';
+    instructionsDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    instructionsDiv.style.borderRadius = '5px';
+    instructionsDiv.innerHTML = `
+      <h3>Main Scene Controls</h3>
+      <p>Arrow keys / WASD: Move red cube</p>
+      <p>Space: Toggle rotation</p>
     `;
-
-    document.body.appendChild(instructions);
+    document.body.appendChild(instructionsDiv);
   }
 
-  public onEnter(): void {
-    super.onEnter();
-    console.log('Entered main scene');
+  /**
+   * Create a back button to return to intro screen
+   */
+  private createBackButton(): void {
+    // Create a canvas for the button
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    canvas.width = 256;
+    canvas.height = 64;
+
+    // Style the button
+    context.fillStyle = '#2c3e50';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.strokeStyle = '#e74c3c';
+    context.lineWidth = 4;
+    context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+    context.font = 'Bold 24px Arial';
+    context.fillStyle = '#ecf0f1';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText('Back to Intro', canvas.width / 2, canvas.height / 2);
+
+    // Create a texture from the canvas
+    const texture = new THREE.CanvasTexture(canvas);
+
+    // Create a plane with the texture
+    this.backButton = new THREE.Mesh(
+      new THREE.PlaneGeometry(2, 0.5),
+      new THREE.MeshBasicMaterial({ map: texture, transparent: true })
+    );
+
+    // Position the button at the top-right corner
+    this.backButton.position.set(6, 4, 0);
+    this.getThreeScene().add(this.backButton);
   }
 
-  public onExit(): void {
-    super.onExit();
-    console.log('Exited main scene');
+  /**
+   * Handle mouse clicks
+   */
+  private onMouseClick(event: MouseEvent): void {
+    // Calculate mouse position in normalized device coordinates (-1 to +1)
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Update the raycaster with the camera and mouse position
+    const camera = this.getThreeScene().getObjectByName(
+      'camera'
+    ) as THREE.Camera;
+    if (!camera) return;
+
+    this.raycaster.setFromCamera(this.mouse, camera);
+
+    // Check if back button was clicked
+    if (this.backButton) {
+      const intersects = this.raycaster.intersectObject(this.backButton);
+      if (intersects.length > 0) {
+        console.log('Back button clicked, returning to intro screen');
+        this.sceneManager.switchScene('intro');
+      }
+    }
   }
 }

@@ -1,5 +1,7 @@
 import { Engine } from '@/core/Engine';
 import { SceneManager } from '@/core/SceneManager';
+import { EventDemoScene } from '@/scenes/EventDemoScene';
+import { IntroScene } from '@/scenes/IntroScene';
 import { MainScene } from '@/scenes/MainScene';
 import { injectable, singleton } from 'tsyringe';
 
@@ -13,7 +15,9 @@ export class Application {
   constructor(
     private engine: Engine,
     private sceneManager: SceneManager,
-    private mainScene: MainScene
+    private mainScene: MainScene,
+    private introScene: IntroScene,
+    private eventDemoScene: EventDemoScene
   ) {
     this.initialize();
   }
@@ -22,9 +26,13 @@ export class Application {
    * Initialize the application by setting up scenes
    */
   private initialize(): void {
-    // Register and switch to main scene
+    // Register all scenes
     this.sceneManager.registerScene('main', this.mainScene);
-    this.sceneManager.switchScene('main');
+    this.sceneManager.registerScene('intro', this.introScene);
+    this.sceneManager.registerScene('eventDemo', this.eventDemoScene);
+
+    // Start with the intro scene
+    this.sceneManager.switchScene('intro');
   }
 
   /**
