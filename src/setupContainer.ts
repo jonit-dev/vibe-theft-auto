@@ -1,4 +1,6 @@
+import { EntityBuilder } from '@modules/entities/EntityBuilder';
 import { EventBus } from '@modules/events/EventBus';
+import { InputManager } from '@modules/input/InputManager';
 import { RenderService } from '@modules/rendering/RenderService';
 import { UIService } from '@modules/ui/UIService';
 import { container } from 'tsyringe';
@@ -11,8 +13,6 @@ import { EventDemoScene } from './scenes/EventDemoScene';
 import { IntroScene } from './scenes/IntroScene';
 import { MainScene } from './scenes/MainScene';
 import { ResourceDemoScene } from './scenes/ResourceDemoScene';
-import { EntityBuilder } from './utils/EntityBuilder';
-import { InputManager } from './utils/InputManager';
 // Import resource management components
 import { ResourceCache } from '@modules/resources/ResourceCache';
 import { ResourceManager } from '@modules/resources/ResourceManager';

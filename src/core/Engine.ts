@@ -1,5 +1,5 @@
 import { SceneManager } from '@/core/SceneManager';
-import { InputManager } from '@/utils/InputManager';
+import { InputManager } from '@modules/input/InputManager';
 import { RenderService } from '@modules/rendering/RenderService';
 import { injectable, singleton } from 'tsyringe';
 

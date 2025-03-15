@@ -1,10 +1,10 @@
 import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
 import { ResourceRequest } from '@/core/interfaces/ResourceInterfaces';
-import { AssetCreator } from '@/utils/AssetCreator';
 import { EventBus } from '@modules/events/EventBus';
 import { RenderService } from '@modules/rendering/RenderService';
 import { ResourceManager } from '@modules/resources/ResourceManager';
+import { AssetCreator } from '@modules/resources/generators/AssetCreator';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
 

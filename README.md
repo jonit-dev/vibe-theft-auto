@@ -18,42 +18,49 @@ A scalable Three.js scaffold with TSyringe for dependency injection.
   - Progress tracking for preloading assets
   - Resource tagging for batch operations
 
-## Project Structure
+## Current Directory Structure
+
+The source code is now organized as follows:
 
 ```
-├── public/             # Static files
-│   └── index.html      # Main HTML entry point
-├── src/                # Source code
-│   ├── Application.ts  # Main application class that wires everything together
-│   ├── core/           # Core engine components
-│   │   ├── Engine.ts   # Main game loop
-│   │   ├── SceneManager.ts # Scene management
-│   │   └── interfaces/ # Core interfaces
-│   ├── scenes/         # Game scenes
-│   │   ├── BaseScene.ts # Abstract scene class
-│   │   ├── MainScene.ts # Demo scene
-│   │   └── ResourceDemoScene.ts # Resource management demo
-│   ├── services/       # Services
-│   │   ├── RenderService.ts # Rendering service
-│   │   ├── ResourceManager.ts # Resource management service
-│   │   ├── ResourceCache.ts # Resource caching service
-│   │   └── loaders/    # Resource type loaders
-│   │       ├── TextureLoader.ts # Texture loading
-│   │       ├── ModelLoader.ts # 3D model loading
-│   │       ├── AudioLoader.ts # Audio loading
-│   │       └── JsonLoader.ts # JSON loading
-│   ├── utils/          # Utilities
-│   │   ├── InputManager.ts # Input handling
-│   │   └── AssetCreator.ts # Asset creation utilities
-│   └── index.ts        # Application entry point
-├── assets/             # Asset files
-│   ├── textures/       # Texture files
-│   ├── models/         # 3D model files
-│   ├── audio/          # Audio files
-│   └── config/         # Configuration files
-└── docs/               # Documentation
-    ├── game-engine-architecture.md # Engine architecture guide
-    └── resource-management-system.md # Resource system documentation
+src/
+├── core/                    # Core engine components
+│   ├── Component.ts
+│   ├── Engine.ts
+│   ├── GameObject.ts
+│   ├── Scene.ts
+│   ├── SceneManager.ts
+│   └── interfaces/
+│
+├── modules/                 # Domain-specific modules
+│   ├── rendering/           # Graphics rendering
+│   │   └── RenderService.ts
+│   │
+│   ├── resources/           # Resource management
+│   │   ├── ResourceManager.ts
+│   │   ├── ResourceCache.ts
+│   │   └── loaders/
+│   │       ├── TextureLoader.ts
+│   │       ├── ModelLoader.ts
+│   │       ├── AudioLoader.ts
+│   │       └── JsonLoader.ts
+│   │
+│   ├── events/              # Event system
+│   │   └── EventBus.ts
+│   │
+│   ├── physics/             # Physics and collision
+│   │   └── components/
+│   │       ├── CollisionComponent.ts
+│   │       └── CollisionHandlerComponent.ts
+│   │
+│   └── ui/                  # User interface
+│       └── UIService.ts
+│
+├── scenes/                  # Game scenes
+├── utils/                   # Utility functions
+└── components/              # Game-specific components
+```
+
 ```
 
 ## Getting Started
@@ -67,22 +74,28 @@ A scalable Three.js scaffold with TSyringe for dependency injection.
 
 1. Clone the repository:
 
-   ```
-   git clone https://github.com/yourusername/vibe-theft-auto.git
-   cd vibe-theft-auto
-   ```
+```
+
+git clone https://github.com/yourusername/vibe-theft-auto.git
+cd vibe-theft-auto
+
+```
 
 2. Install dependencies:
-   ```
-   yarn install
-   ```
+```
+
+yarn install
+
+```
 
 ### Running the Development Server
 
 Start the development server with hot reloading:
 
 ```
+
 yarn dev
+
 ```
 
 This will:
@@ -106,8 +119,10 @@ If the browser doesn't open automatically, manually navigate to http://localhost
 Create a production build:
 
 ```
+
 yarn build
-```
+
+````
 
 The optimized output will be in the `dist` directory. You can serve these files using any static file server.
 
@@ -131,7 +146,7 @@ export class MyService {
 export class MyClass {
   constructor(private myService: MyService) {}
 }
-```
+````
 
 > **Note:** Originally we tried using `@autoInjectable()` but encountered constructor invocation issues. Using `@injectable()` and explicitly registering dependencies in the container proved more reliable.
 

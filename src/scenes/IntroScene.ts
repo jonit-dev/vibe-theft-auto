@@ -1,7 +1,7 @@
 import { ReactContainer } from '@/components/ReactContainer';
 import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
-import { InputManager } from '@/utils/InputManager';
+import { InputManager } from '@modules/input/InputManager';
 import * as THREE from 'three';
 import { injectable, singleton } from 'tsyringe';
 

@@ -1,6 +1,6 @@
 import { Component } from '@/core/Component';
 import { IGameObject } from '@/core/interfaces/IGameObject';
-import { InputManager } from '@/utils/InputManager';
+import { InputManager } from '@modules/input/InputManager';
 import { container } from 'tsyringe';
 import { Rotator } from './Rotator';
 import { Transform } from './Transform';

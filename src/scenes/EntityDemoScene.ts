@@ -1,6 +1,6 @@
 import { Scene } from '@/core/Scene';
 import { SceneManager } from '@/core/SceneManager';
-import { EntityBuilder } from '@/utils/EntityBuilder';
+import { EntityBuilder } from '@modules/entities/EntityBuilder';
 import { EventBus } from '@modules/events/EventBus';
 import { RenderService } from '@modules/rendering/RenderService';
 import { ResourceManager } from '@modules/resources/ResourceManager';
